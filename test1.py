@@ -1,5 +1,6 @@
 #test git
 
 # cmd+k pour commit
-# cmd+alt+k pour push
+# cmd+maj+k pour push
+# cmd+p pour pull
 # https://www.jetbrains.com/help/pycharm/commit-and-push-changes.html
