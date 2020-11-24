@@ -10,7 +10,7 @@ l’alignement d’un read est testé sur les régions du génome qui partagent
 au moins un k-mer avec ce read
 
 Le génome de référence est indexé sous forme d’un FM-index
-
+#
 <b><u> 2 programmes :</u></b><br>
     <ul><b><i>index.py :</b></i>
     <ul>
@@ -29,6 +29,7 @@ Le génome de référence est indexé sous forme d’un FM-index
 	
     python map.py --ref [genome_file.fa] --index [dumped_index.dp] --reads [reads.fa] -k [k_value] --max_hamming [h_value] --min_abundance [m_value] --out snps.vcf
 
+#
 <b><u> Fichier VCF de sortie :</u></b>
 <br>Contient 4 informations : 
 <ul>
