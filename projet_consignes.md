@@ -12,17 +12,18 @@ au moins un k-mer avec ce read
 Le génome de référence est indexé sous forme d’un FM-index
 
 <b><u> 2 programmes :</u></b><br>
-    <ul><i>index.py :</i>
-		<ul>Indexer un génome de référence fourni en fasta.</ul>
-		<ul>Créer un FM-index : transformée de BW + structure de données 
-		additionnelles pour le pattern matching</ul>
-		<ul>FMI stocker dans <i>dumped_index.dp</i>.</ul>
-		<ul>Utiliser <i>tools_karkkainen_sanders.py</i> pour le tableau de suffixes</ul></ul>
+    <ul><b><i>index.py :</b></i>
+    <ul>
+		<li>Indexer un génome de référence fourni en fasta.</li>
+		<li>Créer un FM-index : transformée de BW + structure de données 
+		additionnelles pour le pattern matching</li>
+		<li>FMI stocker dans <i>dumped_index.dp</i>.</li>
+		<li>Utiliser <i>tools_karkkainen_sanders.py</i> pour le tableau de suffixes</li></ul></ul>
 <h6>Prend en entrée les arguments suivants : </h6>
 
     python index.py --ref [genome_file.fa] --out [dumped_index.dp]
-<ul><i>map.py :</i>
-	<ul>Mapper un ensemble de reads sur le génome de ref</ul></ul>
+<ul><b><i>map.py :</i></b>
+	<ul><li>Mapper un ensemble de reads sur le génome de ref</li></ul></ul>
 
 <h6>Prend en entrée les arguments suivants : </h6>
 	
