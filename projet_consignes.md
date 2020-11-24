@@ -46,7 +46,7 @@ Pour chaque read :
 <li>L'allèle de référence</li>
 <li>L'allèle alternatif</li>
 <li>Le nombre de reads mappés avec cet allèle alternatif à cette position</li></ul>
-<h6>Exepmle :</h6>
+<h6>Exemple :</h6>
 
     POS REF ALT ABUNDANCE 
     
