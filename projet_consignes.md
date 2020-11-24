@@ -35,7 +35,7 @@ Le génome de référence est indexé sous forme d’un FM-index
 <li>L'allèle de référence</li>
 <li>L'allèle alternatif</li>
 <li>Le nombre de reads mappés avec cet allèle alternatif à cette position</li></ul>
-Exepmle de fichier vcf :
+<h6>Exepmle de fichier vcf :</h6>
 
     POS REF ALT ABUNDANCE 
     
