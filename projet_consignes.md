@@ -1,17 +1,17 @@
-# Mappeur-SNPcaller de reads sur génome de référence.
+<h1>Mappeur-SNPcaller de reads sur génome de référence. </h1>
 
 <h6>Substitutions autorisées (pas d’insertion ni de délétion).</h6>
 
-<b><u>Objectif :</u></b>	
+<h4><b><u>Objectif :</u></b></h4>
 identifier les SNPs contenus dans les reads et les fournir dans un fichier vcf.
 
-<b><u> Consigne :</u></b>
+<h4><b><u> Consigne :</u></b></h4>
 l’alignement d’un read est testé sur les régions du génome qui partagent
 au moins un k-mer avec ce read
 
 Le génome de référence est indexé sous forme d’un FM-index
 #
-<b><u> 2 programmes :</u></b><br>
+<h4><b><u> 2 programmes :</u></b><br></h4>
     <ul><b><i>index.py :</b></i>
     <ul>
 		<li>Indexer un génome de référence fourni en fasta.</li>
@@ -30,7 +30,7 @@ Le génome de référence est indexé sous forme d’un FM-index
     python map.py --ref [genome_file.fa] --index [dumped_index.dp] --reads [reads.fa] -k [k_value] --max_hamming [h_value] --min_abundance [m_value] --out snps.vcf
 
 #
-<b><u> Fichier VCF de sortie :</u></b>
+<h4><b><u> Fichier VCF de sortie :</u></b></h4>
 <br>Contient 4 informations : 
 <ul>
 <li>La position du génome muté</li>
