@@ -2,16 +2,16 @@
 
 <h6>Substitutions autorisées (pas d’insertion ni de délétion).</h6>
 
-<h4><b><u>Objectif :</u></b></h4>
+<h3><b><u>Objectif :</u></b></h3>
 identifier les SNPs contenus dans les reads et les fournir dans un fichier vcf.
 
-<h4><b><u> Consigne :</u></b></h4>
+<h3><b><u> Consigne :</u></b></h3>
 l’alignement d’un read est testé sur les régions du génome qui partagent
 au moins un k-mer avec ce read
 
 Le génome de référence est indexé sous forme d’un FM-index
 #
-<h4><b><u> 2 programmes :</u></b><br></h4>
+<h3><b><u> 2 programmes :</u></b><br></h3>
     <ul><b><i>index.py :</b></i>
     <ul>
 		<li>Indexer un génome de référence fourni en fasta.</li>
@@ -30,7 +30,7 @@ Le génome de référence est indexé sous forme d’un FM-index
     python map.py --ref [genome_file.fa] --index [dumped_index.dp] --reads [reads.fa] -k [k_value] --max_hamming [h_value] --min_abundance [m_value] --out snps.vcf
 
 #
-<h4><b><u> Fichier VCF de sortie :</u></b></h4>
+<h3><b><u> Fichier VCF de sortie :</u></b></h3>
 <br>Contient 4 informations : 
 <ul>
 <li>La position du génome muté</li>
