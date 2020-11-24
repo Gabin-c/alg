@@ -1,6 +1,6 @@
 # Mappeur-SNPcaller de reads sur génome de référence.
 
-######Substitutions autorisées (pas d’insertion ni de délétion).
+<h6>Substitutions autorisées (pas d’insertion ni de délétion).</h6>
 
 <b><u>Objectif :</u></b>	
 identifier les SNPs contenus dans les reads et les fournir dans un fichier vcf.
@@ -18,13 +18,13 @@ Le génome de référence est indexé sous forme d’un FM-index
 		additionnelles pour le pattern matching</ul>
 		<ul>FMI stocker dans <i>dumped_index.dp</i>.</ul>
 		<ul>Utiliser <i>tools_karkkainen_sanders.py</i> pour le tableau de suffixes</ul></ul>
-######Prend en entrée les arguments suivants : 
+<h6>Prend en entrée les arguments suivants : </h6>
 
     python index.py --ref [genome_file.fa] --out [dumped_index.dp]
 <ul><i>map.py :</i>
 	<ul>Mapper un ensemble de reads sur le génome de ref</ul></ul>
 
-######Prend en entrée les arguments suivants : 
+<h6>Prend en entrée les arguments suivants : </h6>
 	
     python map.py --ref [genome_file.fa] --index [dumped_index.dp] --reads [reads.fa] -k [k_value] --max_hamming [h_value] --min_abundance [m_value] --out snps.vcf
 
