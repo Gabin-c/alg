@@ -8,8 +8,6 @@ import tools_karkkainen_sanders as tks
 # import sys
 import pickle
 
-# import du fichier fasta de référence
-
 
 def get_seq(fasta: str):
     """
