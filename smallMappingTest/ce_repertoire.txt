@@ -1,0 +1,37 @@
+Test 1 : données simulées
+-------------------------
+
+Dans ce répertoire on trouve une séquence de référence reference.fasta et des reads faits à la main à partir de cette séquence pour tester précisément le comportement du mapper sur des données maitrisées. On ne testera pas les performances (temps+memoire) à partir de ces données.
+
+Fichiers principaux :
+- reference.fasta : génome de référence = séquence aléatoire de 1000 caractères
+- reads.fasta : 20 reads de taille 100 bp
+- res_reference_k[x]_d[y].txt : résultats à obtenir en mappant les reads sur la référence avec les paramètres k=x et dmax=y
+
+Détails sur les reads (dans le fichier reads.fasta) :
+ * Le cas le plus simple: 1 unique match parfait sur strand direct, y compris aux positions extrêmes de la séquence de référence (read1, read2, read3)
+ * Ajout de 3 substitutions (détectable avec graine<=49) (read 5)
+ * Ajout d'une seule substitution en position 0 (read 6)
+ * Ajout de 5 substitutions equi-réparties toutes les 20 positions (mapping détectable avec graine<20) (read 7)
+ * idem read7 mais la première substitution est décalée 19-> 20 : avec k=20 on ne détecte ce read qu'avec le premier kmer (read 8)
+ * idem read7 sans la dernière substitution : avec k=20 on ne détecte ce read qu'avec le dernier kmer (read 9)
+ * reads simulés sur le brin reverse (reverse complément) : reads 4, 10, 15
+ * un read qui ne s'aligne pas : read 11 (jointure de 2 séquences à 2 positions différentes du génome)
+
+
+Faire les tests avec k=19 et 20 et dmax=4 et 5.
+
+Autres séquences de référence pour tester le choix des alignements quand plusieurs sont possibles pour un même read :
+
+fixer k=20 et dmax=5 et comparer les résultats avec celui obtenu pour reference.fasta :
+ * résultats strictement identiques pour reference2.fasta, reference3.fasta et reference5.fasta
+ * reference4.fasta : tous les strands inversés, positions décalées de : 1000-pos-100
+ * reference6.fasta : toutes les positions shiftées de +1000
+ 
+Détails :
+ * reference3 : reference.fasta dupliquée à l'identique
+ * reference3 : reference.fasta dupliquée et reverse-comp à la suite
+ * reference4 : reference.fasta dupliquée et reverse-comp, mais rev-comp en premier
+ * reference5 : reference.fasta dupliquée et mutée (tx : 1 subst/50 bp), séquence mutée en second
+ * reference6 : reference.fasta dupliquée et mutée (tx : 1 subst/50 bp), séquence mutée en premier
+
