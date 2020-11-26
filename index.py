@@ -4,8 +4,8 @@
 # Indexer le genome de reference fourni en fasta (FM-index)
 
 import tools_karkkainen_sanders as tks
-# import getopt
-# import sys
+import getopt
+import sys
 import pickle
 
 
@@ -57,13 +57,14 @@ s = get_seq("smallMappingTest/reference.fasta")[0]
 sa = get_seq("smallMappingTest/reference.fasta")[1]
 
 # Test de la fonction :
+"""
 bwt = get_bwt("smallMappingTest/reference.fasta")
 print("i\tsa[i]\tbwt[i]\tF")
 for i in range(len(s)):
     print(f"{i}\t{sa[i]}\t{bwt[i]}\t{s[sa[i]]}")
+"""
 
-
-def get_fmi(ref_fasta):
+def get_fmi(ref_fasta, out_file):
     """
     Fonction qui creer le FMindex avec :
         L : BWT
@@ -76,24 +77,47 @@ def get_fmi(ref_fasta):
     for i in range(len(get_seq(ref_fasta)[0])):
         L += get_bwt(ref_fasta)[i]
         F += get_seq(ref_fasta)[0][get_seq(ref_fasta)[1][i]]
-    return L, F
+    with open(out_file, "wb") as f1:
+        pickle.dump((L,F), f1)
 
 
-my_fmi = get_fmi("smallMappingTest/reference.fasta")
-# bwt :
-my_fmi[0]
-# F :
-my_fmi[1]
+get_fmi("smallMappingTest/reference.fasta",'dumped_index.dp')
 
-# Ecriture du FMI dans un fichier :
-with open('dumped_index.dp', "wb") as f1:
-    pickle.dump(my_fmi, f1)
+
 
 # Verification du fichier :
+"""
 verif = None
 print(verif)
 with open('dumped_index.dp', "rb") as f1:
     verif = pickle.load(f1)
 type(verif)
 print(verif)
+"""
 
+
+if __name__ == "__main__":
+    ref_file = ''
+    out_file = ''
+    try:
+        opts, _ =  getopt.getopt(sys.argv[1:],
+                                 "r:o:h",
+                                 ["ref=","out="])
+    except getopt.GetoptError as err:
+        print('index.py --ref [genome_file.fa] --out [dumped_index.dp]')
+        sys.exit(2)
+
+    for option, arg in opts:
+        if option in ("-h"):
+            print('index.py --ref [genome_file.fa] --out [dumped_index.dp]')
+            sys.exit()
+        elif option in ("-r", "--ref"):
+            ref_file = arg
+        elif option in ("-o", "--out"):
+            out_file = arg
+    print('Reference file is ', ref_file)
+    print('Output file is ', out_file)
+
+    get_fmi(ref_file, out_file)
+
+# python index.py --ref smallMappingTest/reference.fasta --out dumped_index.dp
