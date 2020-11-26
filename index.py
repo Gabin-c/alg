@@ -26,7 +26,7 @@ def get_seq(fasta: str):
 
 
 # Test de la fonction
-get_seq("smallMappingTest/reference.fasta")
+# get_seq("smallMappingTest/reference.fasta")
 
 # Pour avoir la sequence :
 # get_seq("smallMappingTest/reference.fasta")[0]
@@ -52,9 +52,10 @@ def get_bwt(fasta: str) -> str:
             bwt += s[sa[i] - 1]
     return bwt
 
+# test :
+# s = get_seq("smallMappingTest/reference.fasta")[0]
+# sa = get_seq("smallMappingTest/reference.fasta")[1]
 
-s = get_seq("smallMappingTest/reference.fasta")[0]
-sa = get_seq("smallMappingTest/reference.fasta")[1]
 
 # Test de la fonction :
 """
@@ -64,45 +65,80 @@ for i in range(len(s)):
     print(f"{i}\t{sa[i]}\t{bwt[i]}\t{s[sa[i]]}")
 """
 
+
+def get_n(fasta: str) -> {}:
+    n = {"$": 0, "A": 0, "C": 0, "G": 0, "T": 0}  # key = letter, value = number of occurrences
+    for letter in get_bwt(fasta):
+        n[letter] += 1
+    return n
+
+
+def get_r(fasta: str) -> {}:
+    n = {}  # key = letter, value = number of occurrences
+    r = []  # for each i: rank of the i^th value in bwt
+    for letter in get_bwt(fasta):
+        if letter not in n:
+            n[letter] = 0
+        n[letter] += 1
+        r.append(n[letter])
+    return r
+
+
+'''
+n = get_n("smallMappingTest/reference.fasta")
+print(n)
+r = get_r("smallMappingTest/reference.fasta")
+print(r)
+print(n)
+'''
+
+
 def get_fmi(ref_fasta, out_file):
     """
     Fonction qui creer le FMindex avec :
         L : BWT
-        F : Ordre alphabetique
-    :param ref_fasta: sequence fasta de reference
+        sa :
+        n : nombre de chaque caractere
+        r : rang de chaque caractere
+    :param ref_fasta : sequence fasta de reference
+    :param out_file : fichier de sortie contenant le FMI
     :return:
     """
     L = ""
-    F = ""
+    sa = get_seq(ref_fasta)[1]
+    n = get_n(ref_fasta)
+    r = get_r(ref_fasta)
     for i in range(len(get_seq(ref_fasta)[0])):
         L += get_bwt(ref_fasta)[i]
-        F += get_seq(ref_fasta)[0][get_seq(ref_fasta)[1][i]]
     with open(out_file, "wb") as f1:
-        pickle.dump((L,F), f1)
+        pickle.dump((L, sa, n, r), f1)
+    return L, sa, n, r
 
 
-get_fmi("smallMappingTest/reference.fasta",'dumped_index.dp')
+'''
+# verification fonction get_fmi
+my_fmi = get_fmi("smallMappingTest/reference.fasta",'dumped_index.dp')
+my_fmi[0] # bwt
+my_fmi[1] # sa
+my_fmi[2] # n
+my_fmi[3] # r 
+'''
 
-
-
+'''
 # Verification du fichier :
-"""
 verif = None
 print(verif)
 with open('dumped_index.dp', "rb") as f1:
     verif = pickle.load(f1)
 type(verif)
 print(verif)
-"""
-
+'''
 
 if __name__ == "__main__":
     ref_file = ''
     out_file = ''
     try:
-        opts, _ =  getopt.getopt(sys.argv[1:],
-                                 "r:o:h",
-                                 ["ref=","out="])
+        opts, _ = getopt.getopt(sys.argv[1:], "r:o:h", ["ref=", "out="])
     except getopt.GetoptError as err:
         print('index.py --ref [genome_file.fa] --out [dumped_index.dp]')
         sys.exit(2)
