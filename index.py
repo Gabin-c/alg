@@ -20,7 +20,7 @@ def get_seq(fasta: str):
     with open(fasta) as fasta_file:
         for line in fasta_file:
             if line[0] != ">":
-                s = line.strip()
+                s = line.strip()+"$"
                 sa = tks.simple_kark_sort(s)
                 return s, sa
 
@@ -59,8 +59,8 @@ sa = get_seq("smallMappingTest/reference.fasta")[1]
 # Test de la fonction :
 bwt = get_bwt("smallMappingTest/reference.fasta")
 print("i\tsa[i]\tbwt[i]\tF")
-for i in range(len(get_seq("smallMappingTest/reference.fasta")[0])):
-    print(f"{i}\t{get_seq('smallMappingTest/reference.fasta')[1][i]}\t{bwt[i]}\t{s[sa[i]]}")
+for i in range(len(s)):
+    print(f"{i}\t{sa[i]}\t{bwt[i]}\t{s[sa[i]]}")
 
 
 def get_fmi(ref_fasta):
@@ -71,13 +71,19 @@ def get_fmi(ref_fasta):
     :param ref_fasta: sequence fasta de reference
     :return:
     """
+    L = ""
+    F = ""
     for i in range(len(get_seq(ref_fasta)[0])):
-        L = get_bwt(ref_fasta)[i]
-        F = get_seq(ref_fasta)[0][get_seq(ref_fasta)[1][i]]
-        return L, F
+        L += get_bwt(ref_fasta)[i]
+        F += get_seq(ref_fasta)[0][get_seq(ref_fasta)[1][i]]
+    return L, F
 
 
 my_fmi = get_fmi("smallMappingTest/reference.fasta")
+# bwt :
+my_fmi[0]
+# F :
+my_fmi[1]
 
 # Ecriture du FMI dans un fichier :
 with open('dumped_index.dp', "wb") as f1:
@@ -89,4 +95,5 @@ print(verif)
 with open('dumped_index.dp', "rb") as f1:
     verif = pickle.load(f1)
 type(verif)
-print(verif)  # il n'y a que 1 tuple donc probleme dans la fonction get_fmi()
+print(verif)
+
