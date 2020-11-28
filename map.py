@@ -95,13 +95,13 @@ def map(ref, index, reads, k, max_hamming, min_abundance, out ):
 
 
 reads = open("smallMappingTest/reads.fasta") # fichier de reads
-k = 50 # k-mer # list des position des k-mer du read sur le génome de reference
+k = 30 # k-mer # list des position des k-mer du read sur le génome de reference
+dict = {} # dictionnaire vide
 for line in reads:
     if line[0] != ">":
         read = line.strip()  # on garde toutes les lignes du fichier fasta qui ne commence pas par ">" (ce sont nos reads)
         start = -1  # -1 car sinon ça commence à la deuxième lettre du read (je ne sais pas pourquoi)
         end = k - 1 # longueur du k-mer pour stoper
-        dict = {} # dictionnaire vide
         dict[read] = {}  # dictionnaire avec les read
         for i in range(start, len(read), end):  # on recherche le k-mer sur le genome de reference en changeant de pas sur toute la longueur du read (un pas = longueur du kmer)
             while end <= len(read):
