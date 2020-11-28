@@ -108,8 +108,16 @@ for line in reads:
                 start += 1
                 end += 1
                 if len(read[start:end]) == k: # car sinon on peut avoir le dernier k-mer qui ne fait pas la taille k demandée
+                    # occ = {}
+                    # occ[read] = start + ([get_occurrences(read[start:end], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])])
+                    # on va créer un dictionnaire avec en clé le kmer et en valeur la position du kmer sur le read
+                    # + les positions du kmer sur le génome
+                    # A la fin on aura un dictionnaire kmer:positions                    # On pourrait soit rajouter une information dans le dictionnaire en ajoutant la position de départ du kmer
                     occ = ([get_occurrences(read[start:end], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])]) # recherche des occurrences du kmer
                     if occ != [[]]: # pour ne pas afficher les listes vides
                         print("Le k-mer : ", read[start:end], "match sur la position : ", occ)
 
 
+# actuellement occ est une liste correspondant à un kmer
+# il faudrait que l'on ai une liste de liste ou un dictionnaire a avec le kmer et les positions
+#
