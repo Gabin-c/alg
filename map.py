@@ -95,20 +95,33 @@ def map(ref, index, reads, k, max_hamming, min_abundance, out ):
 
 
 reads = open("smallMappingTest/reads.fasta") # fichier de reads
-k = 30 # k-mer # list des position des k-mer du read sur le génome de reference
+k = 50 # k-mer # list des position des k-mer du read sur le génome de reference
 for line in reads:
     if line[0] != ">":
         read = line.strip()  # on garde toutes les lignes du fichier fasta qui ne commence pas par ">" (ce sont nos reads)
-        print("Read ", read)
         start = -1  # -1 car sinon ça commence à la deuxième lettre du read (je ne sais pas pourquoi)
         end = k - 1 # longueur du k-mer pour stoper
+        dict = {} # dictionnaire vide
+        dict[read] = {}  # dictionnaire avec les read
         for i in range(start, len(read), end):  # on recherche le k-mer sur le genome de reference en changeant de pas sur toute la longueur du read (un pas = longueur du kmer)
             while end <= len(read):
                 start += 1
                 end += 1
+                occ = []
+                dict[read][read[start:end]] = occ # dictionnaire kmer : position genome dans le dictionnaire des reads
                 if len(read[start:end]) == k: # car sinon on peut avoir le dernier k-mer qui ne fait pas la taille k demandée
                     occ = get_occurrences(read[start:end], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1]) # recherche des occurrences du kmer
                     if len(occ) > 0: # pour ne pas afficher les listes vides
-                        print("Le k-mer : ", read[start:end], "match sur la position : ", occ)
+                        dict[read][read[start:end]] += occ # ajout des positions d'occurence dans le dictionnaire
+                    # occ = {}
+                    # occ[read] = start + ([get_occurrences(read[start:end], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])])
+                    # on va créer un dictionnaire avec en clé le kmer et en valeur la position du kmer sur le read
+                    # + les positions du kmer sur le génome
+                    # A la fin on aura un dictionnaire kmer:positions                    # On pourrait soit rajouter une information dans le dictionnaire en ajoutant la position de départ du kmer
+                        print(dict)
 
 
+
+# actuellement occ est une liste correspondant à un kmer
+# il faudrait que l'on ai une liste de liste ou un dictionnaire a avec le kmer et les positions
+#

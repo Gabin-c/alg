@@ -117,14 +117,14 @@ def get_fmi(ref_fasta, output_file):
     return bwt, sa, n, r
 
 
-'''
+
 # verification fonction get_fmi
 my_fmi = get_fmi("smallMappingTest/reference.fasta",'dumped_index.dp')
 my_fmi[0] # bwt
 my_fmi[1] # sa
 my_fmi[2] # n
 my_fmi[3] # r 
-'''
+
 
 '''
 # Verification du fichier :
