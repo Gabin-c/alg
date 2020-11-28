@@ -52,10 +52,12 @@ def get_bwt(fasta: str) -> str:
             bwt += s[sa[i] - 1]
     return bwt
 
-# test :
-# s = get_seq("smallMappingTest/reference.fasta")[0]
-# sa = get_seq("smallMappingTest/reference.fasta")[1]
 
+'''
+test :
+s = get_seq("smallMappingTest/reference.fasta")[0]
+sa = get_seq("smallMappingTest/reference.fasta")[1]
+'''
 
 # Test de la fonction :
 """
@@ -93,7 +95,7 @@ print(n)
 '''
 
 
-def get_fmi(ref_fasta, out_file):
+def get_fmi(ref_fasta, output_file):
     """
     Fonction qui creer le FMindex avec :
         L : BWT
@@ -101,18 +103,18 @@ def get_fmi(ref_fasta, out_file):
         n : nombre de chaque caractere
         r : rang de chaque caractere
     :param ref_fasta : sequence fasta de reference
-    :param out_file : fichier de sortie contenant le FMI
+    :param output_file : fichier de sortie contenant le FMI
     :return:
     """
-    L = ""
+    bwt = ""
     sa = get_seq(ref_fasta)[1]
     n = get_n(ref_fasta)
     r = get_r(ref_fasta)
     for i in range(len(get_seq(ref_fasta)[0])):
-        L += get_bwt(ref_fasta)[i]
-    with open(out_file, "wb") as f1:
-        pickle.dump((L, sa, n, r), f1)
-    return L, sa, n, r
+        bwt += get_bwt(ref_fasta)[i]
+    with open(output_file, "wb") as f1:
+        pickle.dump((bwt, sa, n, r), f1)
+    return bwt, sa, n, r
 
 
 '''
@@ -144,7 +146,7 @@ if __name__ == "__main__":
         sys.exit(2)
 
     for option, arg in opts:
-        if option in ("-h"):
+        if option in "-h":
             print('index.py --ref [genome_file.fa] --out [dumped_index.dp]')
             sys.exit()
         elif option in ("-r", "--ref"):
