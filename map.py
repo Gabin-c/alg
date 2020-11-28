@@ -95,12 +95,11 @@ def map(ref, index, reads, k, max_hamming, min_abundance, out ):
 
 
 reads = open("smallMappingTest/reads.fasta") # fichier de reads
-k = 30 # k-mer
-occ = [] # list des position des k-mer du read sur le génome de reference
+k = 30 # k-mer # list des position des k-mer du read sur le génome de reference
 for line in reads:
     if line[0] != ">":
         read = line.strip()  # on garde toutes les lignes du fichier fasta qui ne commence pas par ">" (ce sont nos reads)
-        print("Read : ", read)
+        print("Read ", read)
         start = -1  # -1 car sinon ça commence à la deuxième lettre du read (je ne sais pas pourquoi)
         end = k - 1 # longueur du k-mer pour stoper
         for i in range(start, len(read), end):  # on recherche le k-mer sur le genome de reference en changeant de pas sur toute la longueur du read (un pas = longueur du kmer)
@@ -108,8 +107,8 @@ for line in reads:
                 start += 1
                 end += 1
                 if len(read[start:end]) == k: # car sinon on peut avoir le dernier k-mer qui ne fait pas la taille k demandée
-                    occ = ([get_occurrences(read[start:end], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])]) # recherche des occurrences du kmer
-                    if occ != [[]]: # pour ne pas afficher les listes vides
+                    occ = get_occurrences(read[start:end], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1]) # recherche des occurrences du kmer
+                    if len(occ) > 0: # pour ne pas afficher les listes vides
                         print("Le k-mer : ", read[start:end], "match sur la position : ", occ)
 
 
