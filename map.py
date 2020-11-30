@@ -131,14 +131,15 @@ for valeur in dict.values(): #valeur -> read
     dict_final = {}
     for v in valeur.values(): # v : position pour chaque kmer sur le génome sachant que
         # le premier kmer correspond à la première position sur le read etc etc
+        for pos in v:
+            read = key_dict[i]
+            dm = DynamicMatrix(read, ref[v[pos]-pos_r, v[pos]-pos_r+len(read)], +1, 0, 0)
+            fillH = dm.fillH
 
-        read = key_dict[i]
-        dm = DynamicMatrix(read, ref[v[pos]-i,v[pos]-i+len(read)], +1, 0, 0)
-        fillH = dm.fillH
-
-        if score < fillH and score > len(read)-hamming:
-            positionfinal = ref[v[pos]-i]
-            score = fillH
+            if score < fillH and score > len(read)-hamming:
+                positionfinal = ref[v[pos]-i]
+                score = fillH
+        pos_r += 1
 
 
     dict_final[key_dict[i]] = positionfinal
