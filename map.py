@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import pickle
-import Coudray_tp3 as matrix
+import pandas as pd
+import numpy as np
+import fill_matrix as matrix
 
 # Mapping des reads sur le génome de référence
 
@@ -129,62 +131,53 @@ def get_kmer_position(k, read_fasta):
     return kmer_position
 
 
-dict_kmer_position = get_kmer_position(99, "smallMappingTest/reads.fasta")
-
+dict_kmer_position = get_kmer_position(100, "smallMappingTest/reads.fasta")
 
 sequence_initiale = bwt_2_seq(my_fmi[0], my_fmi[2], my_fmi[3])
 key_dict = list(dict_kmer_position.keys())
 i = 0
+hamming = 50
+dict_final = {}
+position_finale = 0
 for kmer in dict_kmer_position.values():
     pos_r = 0
     score = 0
-    dict_final = {}
+    fillH = 0
+    print("read : ", key_dict[i])
     for pos in kmer.values():
-        for position in pos:
-            read = key_dict[i]
-            #print(read)
-            #print(position)
-            #print(sequence_initiale[(position - pos_r):(position - pos_r + len(read))])
-            dm = matrix.DynamicMatrix(read, sequence_initiale[(position - pos_r):(position - pos_r + len(read))], 1, 0,
-                                      0)
-            fillH = matrix.dm.fillH(1)
-            print(fillH)
+        if pos != []:
+            for position in pos:
+                read = key_dict[i]
+                # print("read : ", read)
+                print(position)
+                print("sequence : ", sequence_initiale[(position - pos_r):(position - pos_r + len(read))])
+                dm = matrix.DynamicMatrix(read, sequence_initiale[(position - pos_r):(position - pos_r + len(read))], 1, 0,
+                                          0)
+                fillH = dm.fillH(1)
+                print(fillH)
+                if score < fillH and fillH > (len(read) - hamming):
+                    position_finale = (position - pos_r)
+                    #print(position_finale)
+                    score = fillH
+            dict_final[key_dict[i]] = position_finale
         pos_r += 1
     i += 1
+dict_final
 
 
-    for valeur in dict.values():  # valeur -> read
-            i = 0
-            pos_r = 0
-            score = 0
-            dict_final = {}
-            for v in valeur.values():  # v : position pour chaque kmer sur le génome sachant que
-                # le premier kmer correspond à la première position sur le read etc etc
-                for pos in v:
-                    read = key_dict[i]
-                    dm = DynamicMatrix(read, ref[v[pos] - pos_r, v[pos] - pos_r + len(read)], +1, 0, 0)
-                    fillH = dm.fillH
-
-                    if score < fillH and score > len(read) - hamming:
-                        positionfinal = ref[v[pos] - i]
-                        score = fillH
-                pos_r += 1
-
-            dict_final[key_dict[i]] = positionfinal
-            i += 1
+key_read = list(dict_final.keys())
+# aligner notre read sur le genome de ref en comptant les substition
+# creation d'un tableau avec les 4 colonnes position / ref / alt / abondance (numpy)
+        #chaque read on va
+        # si mismatche existe déja dans le tableau + 1 dans l'abondance.
+        # si le mismatch n'existe pas, on crée la ligne correspondant.
+        # si il n'y a match suivant
+    # A la fin on garde les lignes qui respecte l'abondance.
 
 
-
-#initialise un tableau avec quatre colonne ref alt abundance position
-#chaque read on va
-# si mismatche existe déja dans le tableau + 1 dans l'abondance.
-# si le mismatch n'existe pas, on crée la ligne correspondant.
-# si il n'y a match suivant
-
-# A la fin on garde les lignes qui respecte l'abondance.
-
-
-
+column = ["Pos", "Ref", "Alt", "Abundance"]
+data_vcf = pd.DataFrame(columns = column)
+data_vcf
 
 
 

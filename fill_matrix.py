@@ -34,7 +34,6 @@ class DynamicMatrix:
 # Écrire une méthode score qui prend en argument 2 caractères et qui renvoie le score d’un match si
 # les deux caractères sont égaux et le score d’un mismatch sinon
     def score(self,a, b):
-
         if a == b:
             return self.match
         else:
@@ -45,7 +44,6 @@ class DynamicMatrix:
 ## de la diagonale dans une bande d’épaisseur 2 × width + 1, width sera un paramètre. On se contentera de
 ## calculer le score de l’alignement global (sans l’afficher).  
     def fillH(self, width):
-
         for i in range(1, len(self.S)+1):
             for j in range(max(1, i-width), min(len(self.T)+1,i+width+1)):
 
@@ -79,7 +77,3 @@ class DynamicMatrix:
             
             
 
-#dm = DynamicMatrix("CGAGCTGGTCCTAACCCGGAGACCGCAGGCTGCGCGCGTATCGCAGCATCTGGCATTACGCCGCATCGAGTGCATGCACGAGAGAAGGAAGGGCACTGTT", "CGAGCTGGTCCTAACCCGGAGACCGCAGGCTGCGCGCGTATCGCAGCATCTGGCATTACGCCGCATCGAGTGCATGCACGAGAGAAGGAAGGGCACTGTT", +1, 0, 0)
-#dm.fillH(1)
-
-#dm.printMatrix()
