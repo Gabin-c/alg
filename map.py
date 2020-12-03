@@ -3,7 +3,6 @@
 
 import pickle
 import pandas as pd
-import numpy as np
 import fill_matrix as matrix
 
 # Mapping des reads sur le génome de référence
@@ -57,7 +56,7 @@ def get_up(bwt: str, alpha: chr, start: int, stop: int) -> int:
     return -1
 
 
-def get_occurrences(pattern: str, bwt: str, n: {}, r: [], sa: [int]) -> bool:
+def get_occurrences(pattern: str, bwt: str, n: {}, r: [], sa: [int]) -> []:
     """
     Returns pattern occurrences in the text coded in the bwt
     """
@@ -81,11 +80,7 @@ def get_occurrences(pattern: str, bwt: str, n: {}, r: [], sa: [int]) -> bool:
 # get_occurrences("T", my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])
 
 
-'''
-def map(ref, index, reads, k, max_hamming, min_abundance, out ):
-'''
-
-def bwt_2_seq(bwt: str, n: {}, r:[]) -> str:
+def bwt_2_seq(bwt: str, n: {}, r: []) -> str:
     """
     Fonction qui retourne la sequence initiale à partir de la BWT
     :param bwt: Transformée de BW : my_fmi[0]
@@ -103,15 +98,14 @@ def bwt_2_seq(bwt: str, n: {}, r:[]) -> str:
     return sequence_reconstructed
 
 
-
-def get_kmer_position(k, read_fasta):
+def get_kmer_position(k, reads):
     """
     Retourne un dictionnaire contenant les kmer et leurs positions possibles pour chaque read
     :param k: longueur du kmer
-    :param read_fasta: fichier fasta de reads
+    :param reads: fichier fasta de reads
     :return:
     """
-    with open(read_fasta) as reads_file:
+    with open(reads) as reads_file:
         kmer_position = {}  # dictionnaire vide
         for line in reads_file:
             if line[0] != ">":
@@ -119,7 +113,7 @@ def get_kmer_position(k, read_fasta):
                 start = -1  # -1 car sinon ça commence à la deuxième lettre du read (je ne sais pas pourquoi)
                 end = k - 1  # longueur du k-mer
                 kmer_position[read_line] = {}  # dictionnaire avec les reads
-                for kmer in range(start, len(read_line), k):  # recherche du k-mer sur le genome de reference
+                for kmers in range(start, len(read_line), k):  # recherche du k-mer sur le genome de reference
                     while end <= len(read_line)-1:
                         start += 1
                         end += 1
@@ -131,53 +125,101 @@ def get_kmer_position(k, read_fasta):
     return kmer_position
 
 
-dict_kmer_position = get_kmer_position(100, "smallMappingTest/reads.fasta")
+'''
+def map(ref, index, reads, k, max_hamming, min_abundance, out ):
+    with open(index, "rb") as f1:
+        my_fmi = pickle.load(f1)
+    dict_kmer_position = get_kmer_position(k, reads)
+    i = 0
+    max_hamming = 80
+    dict_final = {}
+    position_finale = 0
+    key_dict = list(dict_kmer_position.keys())
+    ref = bwt_2_seq(my_fmi[0], my_fmi[2], my_fmi[3])
+    for kmer in dict_kmer_position.values():
+        pos_r = 0
+        score = 0
+        fillH = 0
+        print("read : ", key_dict[i])
+        for pos in kmer.values():
+            if pos != []:
+                for position in pos:
+                    read = key_dict[i]
+                    # print("read : ", read)
+                    #print(position)
+                    #print("sequence : ", ref[(position - pos_r):(position - pos_r + len(read))])
+                    dm = matrix.DynamicMatrix(read, ref[(position - pos_r):(position - pos_r + len(read))], 1, 0,
+                                              0)
+                    fillH = dm.fillH(1)
+                    #print("fill : ", fillH)
+                    if score < fillH and fillH > (len(read) - max_hamming):
+                        position_finale = (position - pos_r)
+                        #print(position_finale)
+                        score = fillH
+                dict_final[key_dict[i]] = position_finale
+            pos_r += 1
+        i += 1
+        
+        
+        return out
+'''
 
-sequence_initiale = bwt_2_seq(my_fmi[0], my_fmi[2], my_fmi[3])
-key_dict = list(dict_kmer_position.keys())
+dict_kmer_position = get_kmer_position(99, "smallMappingTest/reads.fasta")
 i = 0
-hamming = 50
+hamming = 80
 dict_final = {}
 position_finale = 0
+key_dict = list(dict_kmer_position.keys())
+sequence_initiale = bwt_2_seq(my_fmi[0], my_fmi[2], my_fmi[3])
 for kmer in dict_kmer_position.values():
     pos_r = 0
     score = 0
     fillH = 0
     print("read : ", key_dict[i])
     for pos in kmer.values():
-        if pos != []:
+        if pos:
             for position in pos:
                 read = key_dict[i]
                 # print("read : ", read)
-                print(position)
+                # print(position)
                 print("sequence : ", sequence_initiale[(position - pos_r):(position - pos_r + len(read))])
-                dm = matrix.DynamicMatrix(read, sequence_initiale[(position - pos_r):(position - pos_r + len(read))], 1, 0,
-                                          0)
+                dm = matrix.DynamicMatrix(read, sequence_initiale[(position - pos_r):(position - pos_r + len(read))], 1,
+                                          0, 0)
                 fillH = dm.fillH(1)
-                print(fillH)
+                # print("fill : ", fillH)
                 if score < fillH and fillH > (len(read) - hamming):
                     position_finale = (position - pos_r)
-                    #print(position_finale)
+                    # print(position_finale)
                     score = fillH
             dict_final[key_dict[i]] = position_finale
         pos_r += 1
     i += 1
-dict_final
-
 
 key_read = list(dict_final.keys())
 # aligner notre read sur le genome de ref en comptant les substition
 # creation d'un tableau avec les 4 colonnes position / ref / alt / abondance (numpy)
-        #chaque read on va
-        # si mismatche existe déja dans le tableau + 1 dans l'abondance.
-        # si le mismatch n'existe pas, on crée la ligne correspondant.
-        # si il n'y a match suivant
-    # A la fin on garde les lignes qui respecte l'abondance.
+# chaque read on va
+# si mismatche existe déja dans le tableau + 1 dans l'abondance.
+# si le mismatch n'existe pas, on crée la ligne correspondant.
+# si il n'y a match suivant
+# A la fin on garde les lignes qui respecte l'abondance.
 
 
-column = ["Pos", "Ref", "Alt", "Abundance"]
-data_vcf = pd.DataFrame(columns = column)
-data_vcf
+column = ["POS", "REF", "ALT", "ABUNDANCE"]
 
+data_vcf = pd.DataFrame(columns=column)
 
-
+for cle, valeur in dict_final.items():
+    pos_read = 0
+    for read, ref in zip(cle, sequence_initiale[valeur:(valeur+100)]):
+        if read != ref:
+            if data_vcf.loc[data_vcf['POS'] == (valeur + pos_read)].empty is False:
+                if data_vcf.loc[data_vcf['ALT'][data_vcf['POS'] == (valeur + pos_read)]].empty is True:
+                    new_line = {'POS': (valeur + pos_read), 'REF': ref, 'ALT': read, 'ABUNDANCE': 1}
+                    data_vcf = data_vcf.append(new_line, ignore_index=True)
+                else:
+                    data_vcf['ABUNDANCE'][data_vcf['POS'] == (valeur + pos_read) and data_vcf['ALL'] == read] += 1
+            else:
+                new_line = {'POS': (valeur + pos_read), 'REF': ref, 'ALT': read, 'ABUNDANCE': 1}
+                data_vcf = data_vcf.append(new_line, ignore_index=True)
+        pos_read += 1
