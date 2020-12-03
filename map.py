@@ -70,80 +70,82 @@ def get_occurrences(pattern: str, bwt: str, n: {}, r: [], sa: [int]) -> bool:
         start = left_first(bwt[new_start], r[new_start], n)
         stop = left_first(bwt[new_stop], r[new_stop], n)
     res = []
-    for i in range(start, stop+1):
-        res.append(sa[i])
+    for occ in range(start, stop+1):
+        res.append(sa[occ])
     return res
 
 
-get_occurrences("T", my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])
+# get_occurrences("T", my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])
 
 
 '''
 def map(ref, index, reads, k, max_hamming, min_abundance, out ):
-    for line in reads:
-        if line[0] != ">":
-            read = line
-            start = 0
-            end = k - 1
-        for i in line:
-            while end <= len(read):
-                occ[i] = get_occurrences(read[start:end], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])
-                start += start
-                end += end
-                i += i
 '''
 
 
-reads = open("smallMappingTest/reads.fasta") # fichier de reads
-k = 100 # k-mer # list des position des k-mer du read sur le génome de reference
-dict = {} # dictionnaire vide
-for line in reads:
-    if line[0] != ">":
-        read = line.strip()  # on garde toutes les lignes du fichier fasta qui ne commence pas par ">" (ce sont nos reads)
-        start = -1  # -1 car sinon ça commence à la deuxième lettre du read (je ne sais pas pourquoi)
-        end = k - 1 # longueur du k-mer pour stoper
-        dict[read] = {}  # dictionnaire avec les read
-        for i in range(start, len(read), end):  # on recherche le k-mer sur le genome de reference en changeant de pas sur toute la longueur du read (un pas = longueur du kmer)
-            while end <= len(read)-1:
-                start += 1
-                end += 1
-                occ = []
-                dict[read][read[start:end]] = occ # dictionnaire kmer : position genome dans le dictionnaire des reads
-                if len(read[start:end]) == k: # car sinon on peut avoir le dernier k-mer qui ne fait pas la taille k demandée
-                    occ = get_occurrences(read[start:end], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1]) # recherche des occurrences du kmer
-                    if len(occ) > 0: # pour ne pas afficher les listes vides
-                        dict[read][read[start:end]] += occ # ajout des positions d'occurence dans le dictionnaire
-                    # occ = {}
-                    # occ[read] = start + ([get_occurrences(read[start:end], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])])
-                    # on va créer un dictionnaire avec en clé le kmer et en valeur la position du kmer sur le read
-                    # + les positions du kmer sur le génome
-                    # A la fin on aura un dictionnaire kmer:positions                    # On pourrait soit rajouter une information dans le dictionnaire en ajoutant la position de départ du kmer
-                        print(dict)
+def get_kmer_position(k, read_fasta):
+    """
+    Retourne un dictionnaire contenant les kmer et leurs positions possibles pour chaque read
+    :param k: longueur du kmer
+    :param read_fasta: fichier fasta de reads
+    :return:
+    """
+    with open(read_fasta) as reads_file:
+        kmer_position = {}  # dictionnaire vide
+        for line in reads_file:
+            if line[0] != ">":
+                read_line = line.strip()  # retire les lignes qui ne sont pas des reads
+                start = -1  # -1 car sinon ça commence à la deuxième lettre du read (je ne sais pas pourquoi)
+                end = k - 1  # longueur du k-mer
+                kmer_position[read_line] = {}  # dictionnaire avec les reads
+                for kmer in range(start, len(read_line), k):  # recherche du k-mer sur le genome de reference
+                    while end <= len(read_line)-1:
+                        start += 1
+                        end += 1
+                        occ = []
+                        kmer_position[read_line][read_line[start:end]] = occ  # dictionnaire kmer : position
+                        if len(read_line[start:end]) == k:  # possible k-mer qui ne fait pas la taille k demandée
+                            occ = get_occurrences(read_line[start:end], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])
+                            kmer_position[read_line][read_line[start:end]] += occ
+    return kmer_position
 
-len(dict.keys())
 
-key_dict = list(dict.keys())
+dict_kmer_position = get_kmer_position(99, "smallMappingTest/reads.fasta")
 
-for valeur in dict.values(): #valeur -> read
+
+key_dict = list(dict_kmer_position.keys())
+for reads in dict_kmer_position.values():
+    print(reads)
     i = 0
     pos_r = 0
     score = 0
     dict_final = {}
-    for v in valeur.values(): # v : position pour chaque kmer sur le génome sachant que
-        # le premier kmer correspond à la première position sur le read etc etc
-        for pos in v:
-            read = key_dict[i]
-            dm = DynamicMatrix(read, ref[v[pos]-pos_r, v[pos]-pos_r+len(read)], +1, 0, 0)
-            fillH = dm.fillH
-
-            if score < fillH and score > len(read)-hamming:
-                positionfinal = ref[v[pos]-i]
-                score = fillH
-        pos_r += 1
+    for pos in reads.values():
+        print(pos)
 
 
-    dict_final[key_dict[i]] = positionfinal
-    i += 1
+
+
+
+        for valeur in dict.values():  # valeur -> read
+            i = 0
+            pos_r = 0
+            score = 0
+            dict_final = {}
+            for v in valeur.values():  # v : position pour chaque kmer sur le génome sachant que
+                # le premier kmer correspond à la première position sur le read etc etc
+                for pos in v:
+                    read = key_dict[i]
+                    dm = DynamicMatrix(read, ref[v[pos] - pos_r, v[pos] - pos_r + len(read)], +1, 0, 0)
+                    fillH = dm.fillH
+
+                    if score < fillH and score > len(read) - hamming:
+                        positionfinal = ref[v[pos] - i]
+                        score = fillH
+                pos_r += 1
+
+            dict_final[key_dict[i]] = positionfinal
+            i += 1
 
 
 

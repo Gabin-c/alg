@@ -29,10 +29,13 @@ def get_seq(fasta: str):
 # get_seq("smallMappingTest/reference.fasta")
 
 # Pour avoir la sequence :
-# get_seq("smallMappingTest/reference.fasta")[0]
+s = get_seq("smallMappingTest/reference.fasta")[0]
 # Pour avoir la suffix array :
-# get_seq("smallMappingTest/reference.fasta")[1]
+sa = get_seq("smallMappingTest/reference.fasta")[1]
 
+for i in range(len(s)):
+    if sa[i] == 500:
+        print(f"{i}\t{sa[i]}\t{s[sa[i]:sa[i]+5]}")
 
 def get_bwt(fasta: str) -> str:
     """
