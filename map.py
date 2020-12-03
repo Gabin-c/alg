@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pickle
+import Coudray_tp3 as matrix
 
 # Mapping des reads sur le génome de référence
 
@@ -82,6 +83,24 @@ def get_occurrences(pattern: str, bwt: str, n: {}, r: [], sa: [int]) -> bool:
 def map(ref, index, reads, k, max_hamming, min_abundance, out ):
 '''
 
+def bwt_2_seq(bwt: str, n: {}, r:[]) -> str:
+    """
+    Fonction qui retourne la sequence initiale à partir de la BWT
+    :param bwt: Transformée de BW : my_fmi[0]
+    :param n: nombre de chaque caractere
+    :param r: rang de chaque caractere
+    :return: La séquence d'origine
+    """
+    sequence_reconstructed = ""
+    line = 0
+    while True:
+        if bwt[line] == "$":
+            break
+        sequence_reconstructed = bwt[line] + sequence_reconstructed
+        line = left_first(bwt[line], r[line], n)
+    return sequence_reconstructed
+
+
 
 def get_kmer_position(k, read_fasta):
     """
@@ -113,21 +132,28 @@ def get_kmer_position(k, read_fasta):
 dict_kmer_position = get_kmer_position(99, "smallMappingTest/reads.fasta")
 
 
+sequence_initiale = bwt_2_seq(my_fmi[0], my_fmi[2], my_fmi[3])
 key_dict = list(dict_kmer_position.keys())
-for reads in dict_kmer_position.values():
-    print(reads)
-    i = 0
+i = 0
+for kmer in dict_kmer_position.values():
     pos_r = 0
     score = 0
     dict_final = {}
-    for pos in reads.values():
-        print(pos)
+    for pos in kmer.values():
+        for position in pos:
+            read = key_dict[i]
+            #print(read)
+            #print(position)
+            #print(sequence_initiale[(position - pos_r):(position - pos_r + len(read))])
+            dm = matrix.DynamicMatrix(read, sequence_initiale[(position - pos_r):(position - pos_r + len(read))], 1, 0,
+                                      0)
+            fillH = matrix.dm.fillH(1)
+            print(fillH)
+        pos_r += 1
+    i += 1
 
 
-
-
-
-        for valeur in dict.values():  # valeur -> read
+    for valeur in dict.values():  # valeur -> read
             i = 0
             pos_r = 0
             score = 0
