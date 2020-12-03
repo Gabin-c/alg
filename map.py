@@ -175,9 +175,30 @@ key_read = list(dict_final.keys())
     # A la fin on garde les lignes qui respecte l'abondance.
 
 
-column = ["Pos", "Ref", "Alt", "Abundance"]
+column = ["POS", "REF", "ALT", "ABUNDANCE"]
+
 data_vcf = pd.DataFrame(columns = column)
 data_vcf
+import pandas as pd
+data_vcf['POS']
+data_vcf
 
+
+sequence_initiale
+
+for cle, valeur in dict_final.items():
+    pos_read = 0
+    for read, ref in cle , sequence_initiale:
+        if read != ref:
+            if data_vcf.loc[data_vcf['POS'] == (valeur + pos_read)].empty == False:
+                if data_vcf.loc[data_vcf['ALT'][data_vcf['POS'] == (valeur + pos_read)].empty == True:
+                    new_line = {'POS': (valeur + pos_read), 'REF': ref, 'ALT': read, 'ABUNDANCE': 1}
+                    data_vcf.append(new_line, ignore_index=True)
+                else:
+                    data_vcf['ABUNDANCE'][data_vcf['POS'] == (valeur + pos_read) and data_vcf['ALL'] == read ] += 1
+            else:
+                new_line = {'POS':(valeur + pos_read),'REF':ref ,'ALT':read ,'ABUNDANCE':1}
+                data_vcf.append(new_line,ignore_index=True)
+        pos_read += 1
 
 
