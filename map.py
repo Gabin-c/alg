@@ -4,6 +4,8 @@
 import pickle
 import pandas as pd
 import fill_matrix as matrix
+import getopt
+import sys
 
 # Mapping des reads sur le génome de référence
 
@@ -125,101 +127,99 @@ def get_kmer_position(k, reads):
     return kmer_position
 
 
-'''
-def map(ref, index, reads, k, max_hamming, min_abundance, out ):
-    with open(index, "rb") as f1:
-        my_fmi = pickle.load(f1)
+def mapping(ref, index, reads, k, max_hamming, min_abundance, out_file):
+    with open(index, "rb") as f2:
+        fmi = pickle.load(f2)
     dict_kmer_position = get_kmer_position(k, reads)
     i = 0
-    max_hamming = 80
     dict_final = {}
-    position_finale = 0
     key_dict = list(dict_kmer_position.keys())
-    ref = bwt_2_seq(my_fmi[0], my_fmi[2], my_fmi[3])
+    sequence_initiale = bwt_2_seq(fmi[0], fmi[2], fmi[3])
     for kmer in dict_kmer_position.values():
         pos_r = 0
         score = 0
-        fillH = 0
-        print("read : ", key_dict[i])
         for pos in kmer.values():
-            if pos != []:
+            if pos:
                 for position in pos:
                     read = key_dict[i]
-                    # print("read : ", read)
-                    #print(position)
-                    #print("sequence : ", ref[(position - pos_r):(position - pos_r + len(read))])
-                    dm = matrix.DynamicMatrix(read, ref[(position - pos_r):(position - pos_r + len(read))], 1, 0,
-                                              0)
-                    fillH = dm.fillH(1)
-                    #print("fill : ", fillH)
-                    if score < fillH and fillH > (len(read) - max_hamming):
+                    dm = matrix.DynamicMatrix(read,
+                                              sequence_initiale[(position - pos_r):(position - pos_r + len(read))], 1,
+                                              0, 0)
+                    fill_mat = dm.fillH(1)
+                    if score < fill_mat and fill_mat >= (len(read) - max_hamming):
                         position_finale = (position - pos_r)
-                        #print(position_finale)
-                        score = fillH
-                dict_final[key_dict[i]] = position_finale
+                        score = fill_mat
+                        dict_final[key_dict[i]] = position_finale
             pos_r += 1
         i += 1
-        
-        
-        return out
-'''
+    
+    column = ["POS", "REF", "ALT", "ABUNDANCE"]
+    data_vcf = pd.DataFrame(columns=column)
 
-dict_kmer_position = get_kmer_position(99, "smallMappingTest/reads.fasta")
-i = 0
-hamming = 80
-dict_final = {}
-position_finale = 0
-key_dict = list(dict_kmer_position.keys())
-sequence_initiale = bwt_2_seq(my_fmi[0], my_fmi[2], my_fmi[3])
-for kmer in dict_kmer_position.values():
-    pos_r = 0
-    score = 0
-    fillH = 0
-    print("read : ", key_dict[i])
-    for pos in kmer.values():
-        if pos:
-            for position in pos:
-                read = key_dict[i]
-                # print("read : ", read)
-                # print(position)
-                print("sequence : ", sequence_initiale[(position - pos_r):(position - pos_r + len(read))])
-                dm = matrix.DynamicMatrix(read, sequence_initiale[(position - pos_r):(position - pos_r + len(read))], 1,
-                                          0, 0)
-                fillH = dm.fillH(1)
-                # print("fill : ", fillH)
-                if score < fillH and fillH > (len(read) - hamming):
-                    position_finale = (position - pos_r)
-                    # print(position_finale)
-                    score = fillH
-            dict_final[key_dict[i]] = position_finale
-        pos_r += 1
-    i += 1
-
-key_read = list(dict_final.keys())
-# aligner notre read sur le genome de ref en comptant les substition
-# creation d'un tableau avec les 4 colonnes position / ref / alt / abondance (numpy)
-# chaque read on va
-# si mismatche existe déja dans le tableau + 1 dans l'abondance.
-# si le mismatch n'existe pas, on crée la ligne correspondant.
-# si il n'y a match suivant
-# A la fin on garde les lignes qui respecte l'abondance.
-
-
-column = ["POS", "REF", "ALT", "ABUNDANCE"]
-
-data_vcf = pd.DataFrame(columns=column)
-
-for cle, valeur in dict_final.items():
-    pos_read = 0
-    for read, ref in zip(cle, sequence_initiale[valeur:(valeur+100)]):
-        if read != ref:
-            if data_vcf.loc[data_vcf['POS'] == (valeur + pos_read)].empty is False:
-                if data_vcf.loc[data_vcf['ALT'][data_vcf['POS'] == (valeur + pos_read)]].empty is True:
-                    new_line = {'POS': (valeur + pos_read), 'REF': ref, 'ALT': read, 'ABUNDANCE': 1}
-                    data_vcf = data_vcf.append(new_line, ignore_index=True)
+    for cle, valeur in dict_final.items():
+        pos_read = 0
+        for read, refer in zip(cle, sequence_initiale[valeur:(valeur+100)]):
+            if read != refer:
+                if data_vcf.loc[data_vcf['POS'] == (valeur + pos_read)].empty is False:
+                    if data_vcf.loc[data_vcf['POS'] == (valeur + pos_read)]['ALT'].empty is True:
+                        new_line = {'POS': (valeur + pos_read), 'REF': refer, 'ALT': read, 'ABUNDANCE': 1}
+                        data_vcf = data_vcf.append(new_line, ignore_index=True)
+                    else:
+                        if data_vcf['ABUNDANCE'][data_vcf['POS'] == (valeur + pos_read)][data_vcf['ALT'] == read].empty\
+                                is False:
+                            data_vcf['ABUNDANCE'][data_vcf['POS'] == (valeur + pos_read)] += 1
                 else:
-                    data_vcf['ABUNDANCE'][data_vcf['POS'] == (valeur + pos_read) and data_vcf['ALL'] == read] += 1
-            else:
-                new_line = {'POS': (valeur + pos_read), 'REF': ref, 'ALT': read, 'ABUNDANCE': 1}
-                data_vcf = data_vcf.append(new_line, ignore_index=True)
-        pos_read += 1
+                    new_line = {'POS': (valeur + pos_read), 'REF': refer, 'ALT': read, 'ABUNDANCE': 1}
+                    data_vcf = data_vcf.append(new_line, ignore_index=True)
+            pos_read += 1
+
+    with open(out_file, 'w') as vcf:
+        vcf.write("#REF: " + ref + "\n""#READS: " + reads +
+                  "\n"'#K: ' + str(k) + '\n''#MAX_SUBST: ' +
+                  str(max_hamming) + '\n''#MIN_ABUNDANCE: ' + str(min_abundance) + '\n')
+    data_vcf[data_vcf.ABUNDANCE >= min_abundance].to_csv(out_file, index=None, sep='\t', mode='a')
+
+#  mapping('smallMappingTest/reference.fasta', 'dumped_index.dp', 'smallMappingTest/reads.fasta', 19, 5, 1, 'snps.vcf')
+
+
+if __name__ == "__main__":
+    reference = ''
+    index_file = ''
+    read_file = ''
+    k_mers = 1
+    hamming = 0
+    abundance = 0
+    out = ''
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "k:h:", ["ref=", "index=", "reads=", "max_hamming=", "min_abundance=",
+                                                          "out="])
+    except getopt.GetoptError as err:
+        print(err)
+        sys.exit(2)
+    for option, arg in opts:
+        if option in "-h":
+            print('python map.py --ref[genome_file.fa] --index[dumped_index.dp] --reads[reads.fa] -k[k_value] '
+                  '--max_hamming[h_value] --min_abundance[m_value] --out snps.vcf')
+            sys.exit()
+        elif option in "--ref":
+            reference = arg
+        elif option in "--index":
+            index_file = arg
+        elif option in "--reads":
+            read_file = arg
+        elif option in "-k":
+            k_mers = arg
+        elif option in "--max_hamming":
+            hamming = arg
+        elif option in "--min_abundance":
+            abundance = arg
+        elif option in "--ref":
+            ref_file = arg
+        elif option in "--out":
+            out = arg
+
+    map(reference, index_file, read_file, k_mers, hamming, abundance, out)
+
+
+#  python map.py --ref smallMappingTest/reference.fasta --index dumped_index.dp --reads smallMappingTest/reads.fasta
+#  -k 19 --max_hamming 5 --min_abundance 3 --out snps.vcf

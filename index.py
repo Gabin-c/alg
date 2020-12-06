@@ -28,14 +28,10 @@ def get_seq(fasta: str):
 # Test de la fonction
 # get_seq("smallMappingTest/reference.fasta")
 
-# Pour avoir la sequence :
-s = get_seq("smallMappingTest/reference.fasta")[0]
-# Pour avoir la suffix array :
-sa = get_seq("smallMappingTest/reference.fasta")[1]
+# Pour avoir la sequence : s = get_seq("smallMappingTest/reference.fasta")[0]
+# Pour avoir la suffix array : sa = get_seq("smallMappingTest/reference.fasta")[1]
 
-for i in range(len(s)):
-    if sa[i] == 500:
-        print(f"{i}\t{sa[i]}\t{s[sa[i]:sa[i]+5]}")
+
 
 def get_bwt(fasta: str) -> str:
     """
@@ -122,11 +118,11 @@ def get_fmi(ref_fasta, output_file):
 
 
 # verification fonction get_fmi
-my_fmi = get_fmi("smallMappingTest/reference.fasta",'dumped_index.dp')
-my_fmi[0] # bwt
-my_fmi[1] # sa
-my_fmi[2] # n
-my_fmi[3] # r 
+# my_fmi = get_fmi("smallMappingTest/reference.fasta",'dumped_index.dp')
+# my_fmi[0] # bwt
+# my_fmi[1] # sa
+# my_fmi[2] # n
+# my_fmi[3] # r
 
 
 '''
@@ -156,9 +152,10 @@ if __name__ == "__main__":
             ref_file = arg
         elif option in ("-o", "--out"):
             out_file = arg
-    print('Reference file is ', ref_file)
-    print('Output file is ', out_file)
+
 
     get_fmi(ref_file, out_file)
+    print('Reference file is ', ref_file)
+    print('Output file is ', out_file)
 
 # python index.py --ref smallMappingTest/reference.fasta --out dumped_index.dp
