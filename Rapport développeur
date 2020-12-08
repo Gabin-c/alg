@@ -1,0 +1,3 @@
+Le programme se distingue en deux fichier .py distinct, le premier traite de l'indexation du génome de référence et le second du mapping des reads sur le génome de référence
+
+Le fichier d'indaxtion nommé index.py a pour but de crée un index composé de la w
