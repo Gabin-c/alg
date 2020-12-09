@@ -33,7 +33,7 @@ def get_seq(fasta: str):
 
 
 
-def get_bwt(fasta: str) -> str:
+def get_bwt(fasta: str):
     """
     Fonction pour obtenir la transformee de Burrows Wheeler à partir du fichier de reference en entree.
     Grace à la fonction get_seq() on obtient la suffixe array qui va permettre la BWT
@@ -60,8 +60,12 @@ sa = get_seq("smallMappingTest/reference.fasta")[1]
 '''
 
 # Test de la fonction :
-"""
+
 bwt = get_bwt("smallMappingTest/reference.fasta")
+print(bwt[0])
+print(bwt[1])
+print(bwt[2])
+"""
 print("i\tsa[i]\tbwt[i]\tF")
 for i in range(len(s)):
     print(f"{i}\t{sa[i]}\t{bwt[i]}\t{s[sa[i]]}")
@@ -69,7 +73,7 @@ for i in range(len(s)):
 
 
 
-def get_r_n(bwt) -> {}:
+def get_r_n(bwt):
     n = {"$": 0, "A": 0, "C": 0, "G": 0, "T": 0} # key = letter, value = number of occurrences
     r = []  # for each i: rank of the i^th value in bwt
     for letter in bwt:
@@ -80,11 +84,11 @@ def get_r_n(bwt) -> {}:
     return r,n
 
 
-'''
-r = get_r("smallMappingTest/reference.fasta")
-print(r[0])
-print(r[1])
-'''
+
+r = get_r_n(bwt[0])
+print(r[0]) #r
+print(r[1]) #n
+
 
 
 def get_fmi(ref_fasta, output_file):
@@ -99,10 +103,7 @@ def get_fmi(ref_fasta, output_file):
     :return:
     """
     res_bwt = get_bwt(ref_fasta)
-
-    bwt = ""
-    for i in range(len(res_bwt[2])): # ???
-        bwt += get_bwt(ref_fasta)[i]  #  ???
+    bwt = res_bwt[0]
 
     sa = res_bwt[1]
     res_n_r = get_r_n(res_bwt[0])
@@ -115,11 +116,11 @@ def get_fmi(ref_fasta, output_file):
 
 
 # verification fonction get_fmi
-# my_fmi = get_fmi("smallMappingTest/reference.fasta",'dumped_index.dp')
-# my_fmi[0] # bwt
-# my_fmi[1] # sa
-# my_fmi[2] # n
-# my_fmi[3] # r
+my_fmi = get_fmi("smallMappingTest/reference.fasta",'dumped_index.dp')
+my_fmi[0] # bwt
+my_fmi[1] # sa
+my_fmi[2] # n
+my_fmi[3] # r
 
 
 '''

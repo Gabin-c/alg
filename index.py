@@ -59,8 +59,10 @@ sa = get_seq("smallMappingTest/reference.fasta")[1]
 '''
 
 # Test de la fonction :
-"""
+
 bwt = get_bwt("smallMappingTest/reference.fasta")
+print(bwt)
+
 print("i\tsa[i]\tbwt[i]\tF")
 for i in range(len(s)):
     print(f"{i}\t{sa[i]}\t{bwt[i]}\t{s[sa[i]]}")
@@ -86,11 +88,11 @@ def get_r(fasta: str) -> {}:
 
 
 
-n = get_n("smallMappingTest/reference.fasta")
-print(n)
-r = get_r("smallMappingTest/reference.fasta")
-print(r)
-print(n)
+#n = get_n("smallMappingTest/reference.fasta")
+#print(n)
+#r = get_r("smallMappingTest/reference.fasta")
+#print(r)
+#print(n)
 
 
 
@@ -118,11 +120,12 @@ def get_fmi(ref_fasta, output_file):
 
 
 # verification fonction get_fmi
-# my_fmi = get_fmi("smallMappingTest/reference.fasta",'dumped_index.dp')
-# my_fmi[0] # bwt
-# my_fmi[1] # sa
-# my_fmi[2] # n
-# my_fmi[3] # r
+my_fmi1 = get_fmi("smallMappingTest/reference.fasta",'dumped_index.dp')
+print(my_fmi1[0])# bwt
+len(my_fmi[0])
+my_fmi[1] # sa
+my_fmi[2] # n
+my_fmi[3] # r
 
 
 '''
