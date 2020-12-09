@@ -33,6 +33,18 @@ La fonction get_r_n(bwt) va calculer à partir de la transformée burrows wheele
 Dans un premier temps la fonction initialise un dictionnaire n avec les 4 nucléotides et une liste r pour stocké les rangs.
 Suite à ça, la bwt va être parcouru et va implémenter au fur et à mesure notre dictionnaire n et notre list r. On obtiendra en sortie un dictionnaire n et une liste r, nos deux derniers éléments de notre FM index.
 
+<h1> map.py </h1> 
+
+L'objectif de se progamme est l'alignement de reads sur la séquence de référence, tous en choisissant les paramètres de l'alignement : nombre de substitutions max, longueur du k-mer.
+
+<h2> mapping(ref, index, reads, k, max_hamming, min_abundance, out_file) </h2>
+
+La fonction mapping() prend en paramètres le génome de référence (ref), un FM index (index) (voir index.py), la longueur du k-mer (k), le nombre maximum de substitution (max_hamming), l'abondance minimum pour un SNP (min_abundance) et le nom du fichier vcf de sortie (out_file).
+
+Cette fonction va retourner un tableau de SNP au format vcf obtenu grâce à l'alignement des reads sur le génome.
+
+
+
 
   
 
