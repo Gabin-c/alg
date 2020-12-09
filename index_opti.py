@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # Indexer le genome de reference fourni en fasta (FM-index)
@@ -42,14 +42,15 @@ def get_bwt(fasta: str) -> str:
     :return: transformee de BW
     """
     bwt = ""
-    s = get_seq(fasta)[0]
-    sa = get_seq(fasta)[1]
+    sequence = get_seq(fasta)
+    s = sequence[0]
+    sa = sequence[1]
     for i in range(len(sa)):
         if sa[i] == 0:
             bwt += "$"
         else:
             bwt += s[sa[i] - 1]
-    return bwt
+    return bwt,sa,s
 
 
 '''
@@ -67,31 +68,23 @@ for i in range(len(s)):
 """
 
 
-def get_n(fasta: str) -> {}:
-    n = {"$": 0, "A": 0, "C": 0, "G": 0, "T": 0}  # key = letter, value = number of occurrences
-    for letter in get_bwt(fasta):
-        n[letter] += 1
-    return n
 
-
-def get_r(fasta: str) -> {}:
-    n = {}  # key = letter, value = number of occurrences
+def get_r_n(bwt) -> {}:
+    n = {"$": 0, "A": 0, "C": 0, "G": 0, "T": 0} # key = letter, value = number of occurrences
     r = []  # for each i: rank of the i^th value in bwt
-    for letter in get_bwt(fasta):
+    for letter in bwt:
         if letter not in n:
             n[letter] = 0
         n[letter] += 1
         r.append(n[letter])
-    return r
+    return r,n
 
 
-
-n = get_n("smallMappingTest/reference.fasta")
-print(n)
+'''
 r = get_r("smallMappingTest/reference.fasta")
-print(r)
-print(n)
-
+print(r[0])
+print(r[1])
+'''
 
 
 def get_fmi(ref_fasta, output_file):
@@ -105,12 +98,16 @@ def get_fmi(ref_fasta, output_file):
     :param output_file : fichier de sortie contenant le FMI
     :return:
     """
+    res_bwt = get_bwt(ref_fasta)
+
     bwt = ""
-    sa = get_seq(ref_fasta)[1]
-    n = get_n(ref_fasta)
-    r = get_r(ref_fasta)
-    for i in range(len(get_seq(ref_fasta)[0])):
-        bwt += get_bwt(ref_fasta)[i]
+    for i in range(len(res_bwt[2])): # ???
+        bwt += get_bwt(ref_fasta)[i]  #  ???
+
+    sa = res_bwt[1]
+    res_n_r = get_r_n(res_bwt[0])
+    n = res_n_r[1]
+    r = res_n_r[0]
     with open(output_file, "wb") as f1:
         pickle.dump((bwt, sa, n, r), f1)
     return bwt, sa, n, r
