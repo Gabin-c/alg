@@ -26,16 +26,14 @@ Puis avec sa et s, la transformée de burrows wheeler est formé.
 La fonction retourne ensuite le suffix array sa et la transformée de burrows wheeler bwt, qui seront stocké dans le FM index.
 
 <h3> Deuxième et dernière étape</h3>
-<h4> get_r_n(bwt) <h4>
+<h4> get_r_n(bwt) </h4>
   
 La fonction get_r_n(bwt) va calculer à partir de la transformée burrows wheeler le rang r et le nombre n pour chaque caractère du génome de référence.
 
 Dans un premier temps la fonction initialise un dictionnaire n avec les 4 nucléotides et une liste r pour stocké les rangs.
 Suite à ça, la bwt va être parcouru et va implémenter au fur et à mesure notre dictionnaire n et notre list r. On obtiendra en sortie un dictionnaire n et une liste r, nos deux derniers éléments de notre FM index.
 
-<h3> Sortie get_fmi() </h3>
 
-A la fin des deux étapes les 4 éléments bwt, sa , n et r sont stocké dans le FM index et on obtient à la sortie du programme un FMindex.db contenant les 4 élements.
   
 
 
