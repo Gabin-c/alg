@@ -60,11 +60,20 @@ def get_up(bwt: str, alpha: chr, start: int, stop: int) -> int:
 
 def get_occurrences(pattern: str, bwt: str, n: {}, r: [], sa: [int]) -> []:
     """
-    Returns pattern occurrences in the text coded in the bwt
+    Retourne les positions des occurences du pattern dans la séquence de référence à l'aide de bwt, sa , n , r.
+    On obtient en sortie une liste des positions des occurences.
+    
+    :param pattern: séquencce
+    :param bwt: Transformée de BW : my_fmi[0]
+    :param n: nombre de chaque caractere
+    :param r: rang de chaque caractere
+    :param sa: suffix array
+    :return: liste d'occurence du pattern dans la bwt
     """
     start = 0
     stop = len(bwt)-1
-    # read the pattern from right to left
+    
+    # lit le pattern de droite à gauche
     for pos_pattern in range(len(pattern)-1, -1, -1):
         current_char = pattern[pos_pattern]
         new_start = get_down(bwt, current_char, start, stop)
@@ -85,6 +94,7 @@ def get_occurrences(pattern: str, bwt: str, n: {}, r: [], sa: [int]) -> []:
 def bwt_2_seq(bwt: str, n: {}, r: []) -> str:
     """
     Fonction qui retourne la sequence initiale à partir de la BWT
+    
     :param bwt: Transformée de BW : my_fmi[0]
     :param n: nombre de chaque caractere
     :param r: rang de chaque caractere
@@ -102,10 +112,11 @@ def bwt_2_seq(bwt: str, n: {}, r: []) -> str:
 
 def get_kmer_position(k, reads):
     """
-    Retourne un dictionnaire contenant les kmer et leurs positions possibles pour chaque read
+    Retourne un dictionnaire contenant les kmer et leurs positions possibles pour chaque read :
+    { Read : { k-mer : [position] } }
     :param k: longueur du kmer
     :param reads: fichier fasta de reads
-    :return:
+    :return: un dictionnaire { Read : { k-mer : [position] } }
     """
     with open(reads) as reads_file:
         kmer_position = {}  # dictionnaire vide
@@ -116,10 +127,10 @@ def get_kmer_position(k, reads):
                 end = k - 1  # longueur du k-mer
                 kmer_position[read_line] = {}  # dictionnaire avec les reads
                 for kmers in range(start, len(read_line), k):  # recherche du k-mer sur le genome de reference
-                    while end <= len(read_line)-1:
+                    while end <= len(read_line)-1: 
                         start += 1
                         end += 1
-                        occ = []
+                        occ = [] # INUTILE ???
                         kmer_position[read_line][read_line[start:end]] = occ  # dictionnaire kmer : position
                         if len(read_line[start:end]) == k:  # possible k-mer qui ne fait pas la taille k demandée
                             occ = get_occurrences(read_line[start:end], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])
@@ -130,32 +141,59 @@ def get_kmer_position(k, reads):
 def mapping(ref, index, reads, k, max_hamming, min_abundance, out_file):
     with open(index, "rb") as f2:
         fmi = pickle.load(f2)
-    dict_kmer_position = get_kmer_position(k, reads)
-    i = 0
-    dict_final = {}
-    key_dict = list(dict_kmer_position.keys())
-    sequence_initiale = bwt_2_seq(fmi[0], fmi[2], fmi[3])
-    for kmer in dict_kmer_position.values():
-        pos_r = 0
-        score = 0
-        for pos in kmer.values():
-            if pos:
-                for position in pos:
-                    read = key_dict[i]
+        
+    # Création du dictionnaire { Read : { k-mer : [position] } } contenant
+    # les positions des occurences k-mers pour chaque read
+    dict_kmer_position = get_kmer_position(k, reads) 
+    
+    # Recherche des meilleurs positions d'alignements
+    
+    dict_final = {} #Création d'un dictionnaire qui ne contiendra que les meilleurs position d'alignement pour chaque read.
+    key_dict = list(dict_kmer_position.keys()) # stockage des différentes reads à alignés
+    sequence_initiale = bwt_2_seq(fmi[0], fmi[2], fmi[3]) # récupération de la séquence initiale
+    
+    i = 0 # permet de déterminer la read que l'on aligne sur le génome 
+    for kmer in dict_kmer_position.values(): # lecture de chaque dictionnaire associé aux reads
+        
+        # lecture de chaque position associé aux k-mers
+        pos_r = 0 # position du k-mer sur le read le premier kmer commence toujours sur le premier nucléotide du read
+        score = 0 # score de l'alignement entre le read et son ancrage sur le génome de référence        
+        for pos in kmer.values(): 
+            
+            if pos: # si il y a bien une position associé au k-mer 
+                
+                for position in pos: # pour toute les positions du k-mer
+                    read = key_dict[i] # read numéro i
+                    # Création d'une matrice d'alignement initialisé à 0 entre le read et son ancrage sur le génome
+                    # la position du read sur le génome est déterminé par la position de l'alignement du k-mer sur le génome (position)
+                    # et la position du k-mer sur le read (pos_r). le read s'alignera de la position "position - pos_r" à cette même position + la 
+                    # longueur du read.
                     dm = matrix.DynamicMatrix(read,
                                               sequence_initiale[(position - pos_r):(position - pos_r + len(read))], 1,
-                                              0, 0)
-                    fill_mat = dm.fillH(1)
-                    if score < fill_mat and fill_mat >= (len(read) - max_hamming):
+                                              0, 0) #MODIFIER
+                    
+                    # Calcul du score d'alignement
+                    fill_mat = dm.fillH(1) #MODIFIER
+                    
+                    # Vérification du score 
+                    # si le score est plus grand que le précédent et respecte le nombre max de substitutions autorisé
+                    # alors le score prédédent et la meilleur position d'alignement remplacé
+                    if score < fill_mat and fill_mat >= (len(read) - max_hamming): 
                         position_finale = (position - pos_r)
                         score = fill_mat
-                        dict_final[key_dict[i]] = position_finale
+                        dict_final[key_dict[i]] = position_finale 
             pos_r += 1
         i += 1
+    # Optention d'un dictionnaire dict_final ( Read : Position ) ne contenant que la meilleur position d'alignement pour chaque read
+        
     
-    column = ["POS", "REF", "ALT", "ABUNDANCE"]
+    # Création et remplisage de la tab VCF
+    
+    ## création de la table VCF
+    column = ["POS", "REF", "ALT", "ABUNDANCE"] 
     data_vcf = pd.DataFrame(columns=column)
-
+    
+    # Remplissage de la table VCF
     for cle, valeur in dict_final.items():
         pos_read = 0
         for read, refer in zip(cle, sequence_initiale[valeur:(valeur+100)]):
