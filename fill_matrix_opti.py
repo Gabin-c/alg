@@ -1,29 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Nov 10 13:24:49 2020
-
-@author: Gabin
-"""
-
-
-## Quel type d’objet python est utilisé pour stocker la matrice de programmation dynamique ? Avec
-## quelle commande accède-t-on à la valeur de la cellule en face de la i-ème lettre de S et la j-ième de T ?
-
-# Objet python : matrice.
-# Commande pour accéder : self.matrix[i][j]
-
 
 class DynamicMatrix:
-    '''stores a matrix |S|x|T| (|S|+1 lines and |T|+1columns), sequences S and T and the score system (match, mismatch, gap)
-        defines some global alignment functions
-        '''
+    """
+    Stock une matrice |S|x|T| avec S et T deux séquences. Permet d'avoir le score d'alignement entre les 2 séquences.
+    Ne prend en compte que les match et mismatch.
+    """
 
-    def __init__(self, S, T ):
+    def __init__(self, S, T):
         """
         Initialisation de la matrice d'alignement entre S et T
-        :param S: Sequence
-        :param T: Sequence
+        :param S: Sequence 1
+        :param T: Sequence 2
         """
 
         self.S = S
@@ -32,7 +20,6 @@ class DynamicMatrix:
         self.matrix = [0 for i in range(len(S) + 1)]
         for i in range(len(S) + 1):
             self.matrix[i] = [0 for j in range(len(T) + 1)]
-
 
     def score(self, a, b):
         """
@@ -49,8 +36,8 @@ class DynamicMatrix:
 
     def fillH(self):
         """
-        Remplit la matrice de manière heuristique dans la diagonal central ( cas ou S et T sont de longueur
-        égale ) avec les paramètres match = 1, mismatch = 0.
+        Remplit la matrice de manière heuristique dans la diagonal central (cas ou S et T sont de longueur égale)
+        avec les paramètres match = 1, mismatch = 0.
 
         :return: le score de l'alignement.
         """
@@ -61,8 +48,9 @@ class DynamicMatrix:
                 self.matrix[i][j] = diagonal
         return self.matrix[len(self.S)][len(self.T)]
 
-    def printMatrix(self): # A SUPPRIMER JUSTE POUR VERIFIER
-        ''' prints the matrix'''
+    def printMatrix(self):  # A SUPPRIMER JUSTE POUR VERIFIER
+        """ prints the matrix
+        """
         width = 4
         vide = " "
         line = f"{vide:>{2 * width}}"
@@ -79,8 +67,3 @@ class DynamicMatrix:
                 line += f"{self.matrix[i][j]:>{width}}"
             print(line)
 
-
-mat = DynamicMatrix("ATCCCCCCTCCC","ATCCCCCCCCCC")
-mat.printMatrix()
-mat.fillH()
-mat.printMatrix()
