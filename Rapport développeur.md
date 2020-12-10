@@ -43,14 +43,30 @@ La fonction mapping() prend en paramètres le génome de référence (ref), un F
 
 Cette fonction va retourner un tableau de SNP au format vcf obtenu grâce à l'alignement des reads sur le génome.
 
-La fonction fonctionne de la façon suivante:
+La fonction fonctionne en 3 étapes :
 
+-Création d'un dictionnaire contenant les positions d'alignement pour chaque k-mer de chaque read
+-Création d'un dictionnaire contenant la meilleur position d'alignement pour chaque read
+-Remplissage de la table des SNPs
+
+<h3> 1 : Dictionnaire read : kmer : positions </h3>
 Dans un premier temps le fichier index va être ouvert afin de rendre accessible les différents éléments de l'index.
 
 
 Suite à cela les positions d'alignements des k-mers pour chaque read vont etre stockés dans un dictionnaire par la fonction get_kmer_position(k , reads)
 avec k la longueur des k-mers et reads le fichier de reads. Après l'utilisation de cette fonction on optient un dictionnaire au format { Read : { K-mer : position } }
-    <h3> get_kmer_position( k , reads ) </h3>
+    <h4> get_kmer_position( k , reads ) </h3>
+    EXPLICATION DE LA FONCTION
+    
+<h3> 2 : Dictionnaire read:position </h3>
+Une fois le dictionnaire crée la fonction passe à l'étape de la localisation de la meilleur position d'alignement de chaque read sur le génome de réference pour cela mapping utilise la trame suivante :
+
+<h3> 3 : Table SNP </h3>
+Une fois le dictionnaire des meilleurs positions d'alignements on passe à l'étape de remplissage de table SNP.
+Dans un premier temps un dataframe est initialisé avec les noms de colonne suivant : POS, REF, ALT, ABUNDANCE. 
+Ensuite chaque read sera aligné 
+
+
 
 
 
