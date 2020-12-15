@@ -101,6 +101,7 @@ def get_fmi(ref_fasta, output_file):
         pickle.dump((bwt, sa, n, r), f1) 
     return bwt, sa, n, r
 
+get_fmi('coli/ecoli_sample.fasta', 'dumped_index2.dp')
 
 if __name__ == "__main__":
     ref_file = ''
