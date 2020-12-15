@@ -211,6 +211,42 @@ t=get_kmer_position(100, "smallMappingTest/reads.fasta", "dumped_index.dp")
 t[0]
 t[1]
 
+def fill_vcf(mat, dict_final, sequence_initiale):
+    for cle, valeur in dict_final.items():
+        pos_read = 0
+        for read, refer in zip(cle, sequence_initiale[valeur:(valeur + 100)]):
+            if read != refer:
+                if (valeur + pos_read) in mat[0]:
+                    for y, u in enumerate(mat[0]):
+                        if u == (valeur + pos_read):
+                            if read != mat[2][y]:
+                                mat[0].append((valeur + pos_read))
+                                mat[1].append(refer)
+                                mat[2].append(read)
+                                mat[3].append(1)
+                            else:
+                                mat[3][y] += 1
+                else:
+                    mat[0].append((valeur + pos_read))
+                    mat[1].append(refer)
+                    mat[2].append(read)
+                    mat[3].append(1)
+            pos_read += 1
+    return mat
+
+def order_vcf(tab_vcf):
+
+    pos_sorted = sorted(tab_vcf[0])
+    new_mat = [[],[],[],[]]
+    for i in pos_sorted:
+        for y, u in enumerate(tab_vcf[0]):
+            if u == i:
+                new_mat[0].append(i)
+                new_mat[1].append(tab_vcf[1][y])
+                new_mat[2].append(tab_vcf[2][y])
+                new_mat[3].append(tab_vcf[3][y])
+    return new_mat
+
 
 def mapping(ref, index, reads: str, k: int, max_hamming: int, min_abundance: int, out_file):
     """
@@ -305,45 +341,29 @@ def mapping(ref, index, reads: str, k: int, max_hamming: int, min_abundance: int
 
 
     print(dict_final_reverse)
-
-
+    mat = [[], [], [], []]
     # CREATION DE LA TABLE VCF
-    column = ["POS", "REF", "ALT", "ABUNDANCE"] 
-    data_vcf = pd.DataFrame(columns=column)
-    
-    # REMPLISSAGE DE LA TABLE VCF
-    for cle, valeur in dict_final_sens.items():
-        pos_read = 0
-        for read2, refer in zip(cle, sequence_initiale[valeur:(valeur+100)]):
-            if read2 != refer:
-                if data_vcf.loc[data_vcf['POS'] == (valeur + pos_read)].empty is False:
-                    # Si la position détectée existe déjà
-                    if data_vcf.loc[data_vcf['POS'] == (valeur + pos_read)]['ALT'].empty is True:
-                        # Si l'allèle alternatif à cette position n'existe pas
-                        # Nouvelle ligne dans le tableau avec cet allèle alternatif à cette position
-                        new_line = {'POS': (valeur + pos_read), 'REF': refer, 'ALT': read2, 'ABUNDANCE': 1}
-                        data_vcf = data_vcf.append(new_line, ignore_index=True)
-                    else:
-                        # +1 à l'abondance si la position existe déjà et si l'allèle alternatif existe déjà
-                        if data_vcf['ABUNDANCE'][data_vcf['POS'] == (valeur + pos_read)][data_vcf['ALT'] == read2].empty is False:
-                            data_vcf['ABUNDANCE'][data_vcf['POS'] == (valeur + pos_read)] += 1
-                else:
-                    # Si la position détectée n'existe pas encore : nouvelle ligne avec les valeurs
-                    new_line = {'POS': (valeur + pos_read), 'REF': refer, 'ALT': read2, 'ABUNDANCE': 1}
-                    data_vcf = data_vcf.append(new_line, ignore_index=True)
-            pos_read += 1
+    tab_vcf = fill_vcf(mat, dict_final_sens, sequence_initiale)
+    tab_vcf = fill_vcf(tab_vcf, dict_final_reverse, sequence_initiale)
+    tab_vcf = order_vcf(tab_vcf)
 
     with open(out_file, 'w') as vcf:
         # Ecriture des 1eres lignes du fichier :
         vcf.write("#REF: " + ref + "\n""#READS: " + reads +
                   "\n"'#K: ' + str(k) + '\n''#MAX_SUBST: ' +
                   str(max_hamming) + '\n''#MIN_ABUNDANCE: ' + str(min_abundance) + '\n')
-    data_vcf = data_vcf.sort_values(by='POS')  # Trier en ordre croissant les positions
-    # Ajout du tableau dans le fichier en prenant en compte le minimum d'abondance :
-    data_vcf[data_vcf.ABUNDANCE >= min_abundance].to_csv(out_file, index=None, sep='\t', mode='a', header=False)
+
+        i = 0
+        while i < len(tab_vcf[0]):
+            if tab_vcf[3][i] >= min_abundance:
+                vcf.write(
+                    str(tab_vcf[0][i]) + '\t' + tab_vcf[1][i] + '\t' + tab_vcf[2][i] + '\t' + str(
+                        tab_vcf[3][i]) + '\n')
+            i += 1
 
 
-mapping('smallMappingTest/reference.fasta', 'dumped_index.dp', 'smallMappingTest/reads.fasta', 100, 5, 0, 'snp14.vcf')
+
+mapping('smallMappingTest/reference.fasta', 'dumped_index.dp', 'smallMappingTest/reads.fasta', 20, 5, 2, 'snp15.vcf')
 
 
 if __name__ == "__main__":
@@ -386,7 +406,5 @@ mapping(reference, index_file, read_file, k_mers, hamming, abundance, output)
 # python map.py --ref smallMappingTest/reference.fasta --index dumped_index.dp --reads smallMappingTest/reads.fasta -k 19 --max_hamming 5 --min_abundance 3 --out snps.vcf
 
 
-ta=[{"POS": 211, "REF": 'A', 'ALT': 'T', 'ABUNDANCE': 25}]
-ta
-ta[0]['ABUNDANCE'] += 1
-ta
+
+
