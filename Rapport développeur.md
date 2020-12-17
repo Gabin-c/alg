@@ -1,5 +1,5 @@
 <center><h1> RAPPORT DÉVELOPPEUR </h1> 
-Gabin Coudray - Davide Gallien
+Gabin Coudray - David Gallien
 <br>M2 BIS</center>
 <hr>
 
