@@ -141,7 +141,8 @@ Ce programme doit être exécuté avec la commande suivante :
 </div>
 <hr>
 
-<embed src="index_diag.pdf" type="application/pdf">
+<img src="index_diag.pdf" alt="some text">
+
 
 
 
