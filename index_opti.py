@@ -126,3 +126,4 @@ if __name__ == "__main__":
     print('Output file is ', out_file)
 
 # python index_opti.py --ref smallMappingTest/reference.fasta --out dumped_index.dp
+# python index_opti.py --ref coli/ecoli_sample.fasta --out dumped_index_coli.dp
