@@ -141,11 +141,7 @@ Ce programme doit être exécuté avec la commande suivante :
 </div>
 <hr>
 
-<object data="index_diag.pdf" type="application/pdf" width="700px" height="700px">
-    <embed src="index_diag.pdf">
-        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="https://www.dropbox.com/s/a1hdh6vlcoknwsb/software_achitecture.pdf?dl=0">Download PDF</a>.</p>
-    </embed>
-</object>
+![alt text](index_diag.png "Diagramme représentant le programme index.py")
 
 
 
