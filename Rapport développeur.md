@@ -138,11 +138,8 @@ Ce programme doit être exécuté avec la commande suivante :
 
     python map.py --ref[genome_file.fa] --index[dumped_index.dp] --reads[reads.fa] -k[k_value] --max_hamming[h_value] --min_abundance[m_value] --out snps.vcf
 
-
-
-
 </div>
-
+<hr>
 
   
 
