@@ -1,5 +1,5 @@
 # RAPPORT DÉVELOPPEUR
-Gabin Coudray - David Gallien
+Gabin Coudray - David Gallien  
 Master 2 BIS
 ***
 Ce programme a pour but de mettre en place un mappeur sans gap pour la détection de SNPs. Il se distingue en deux fichier.py distincts :
