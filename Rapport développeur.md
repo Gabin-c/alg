@@ -1,6 +1,6 @@
 <center><h1> RAPPORT DÉVELOPPEUR </h1> 
 Gabin Coudray - David Gallien
-<br>M2 BIS</center>
+<br>Master 2 BIS</center>
 <hr>
 
 
