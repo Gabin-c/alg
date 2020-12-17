@@ -68,6 +68,8 @@ Ce programme doit être exécuté avec la commande suivante :
     python index.py --ref [genome_file.fa] --out [dumped_index.dp]
 <hr>
 
+![alt text](index_diag.png "Diagramme représentant le programme index.py")
+
 <h1>Deuxième programme : map.py </h1> 
 L'objectif de ce progamme est l'alignement des reads sur la séquence de référence 
 tout en choisissant les paramètres de l'alignement : nombre de substitutions maximum, 
@@ -141,7 +143,6 @@ Ce programme doit être exécuté avec la commande suivante :
 </div>
 <hr>
 
-![alt text](index_diag.png "Diagramme représentant le programme index.py")
 
 
 
