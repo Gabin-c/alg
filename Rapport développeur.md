@@ -1,6 +1,6 @@
-<center><h1> RAPPORT DÉVELOPPEUR </h1> 
+<div align="center"><h1> RAPPORT DÉVELOPPEUR </h1> 
 Gabin Coudray - David Gallien
-<br>Master 2 BIS</center>
+<br>Master 2 BIS</div>
 <hr>
 
 
@@ -98,7 +98,7 @@ Dans un premier temps le fichier contenant le FM index va être ouvert afin de r
 accessible les différents éléments du FM index.
 
 
-<h4> get_kmer_position(k, reads, index) </h3>
+<h4> get_kmer_position(k, reads, index) </h4>
 Suite à cela les positions d'alignements des k-mers pour chaque read vont etre 
 stockés dans un dictionnaire par la fonction <i>get_kmer_position(k, reads)</i>
 avec 'k' la longueur des k-mers et 'reads' le fichier contenant les reads. 
