@@ -144,6 +144,9 @@ Ce programme doit être exécuté avec la commande suivante :
 </div>
 <hr>
 
+![alt text](map_diag.png "Diagramme représentant le programme map.py")
+
+<hr>
 
 
 
