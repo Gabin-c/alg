@@ -102,7 +102,7 @@ python map.py --ref[genome_file.fa] --index[dumped_index.dp] --reads[reads.fa] -
 ```
 ***
 
-![alt text](map_diag.png "Diagramme représentant le programme map.py")
+![alt text](diagmap.png "Diagramme représentant le programme map.py")
 
 ***
 
