@@ -70,6 +70,7 @@ Ce programme doit être exécuté avec la commande suivante :
 
 ![alt text](index_diag.png "Diagramme représentant le programme index.py")
 
+<hr>
 <h1>Deuxième programme : map.py </h1> 
 L'objectif de ce progamme est l'alignement des reads sur la séquence de référence 
 tout en choisissant les paramètres de l'alignement : nombre de substitutions maximum, 
