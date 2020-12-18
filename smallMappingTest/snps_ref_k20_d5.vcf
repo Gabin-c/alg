@@ -1,0 +1,15 @@
+#REF: smallMappingTest/reference.fasta
+#READS: smallMappingTest/reads.fasta
+#K: 20
+#MAX_SUBST: 5
+#MIN_ABUNDANCE: 1
+500	T	G	1
+510	T	A	2
+519	C	G	1
+520	C	A	1
+539	T	A	2
+550	C	G	2
+559	G	C	2
+579	A	C	2
+580	A	T	2
+599	G	A	1
