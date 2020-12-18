@@ -17,11 +17,11 @@ def get_seq(fasta: str):
     :param fasta: sequence fasta de reference
     :return: La sequence du genome de reference et le suffixe array de cette sequence
     """
-    with open(fasta) as fasta_file:
-        for line in fasta_file:
-            if line[0] != ">":
-                s = line.strip()+"$"
-                sa = tks.simple_kark_sort(s)
+    with open(fasta) as fasta_file:  # ouverture du fichier fasta
+        for line in fasta_file:  # lecture du fichier fasta
+            if line[0] != ">":  # Première ligne commençant pas ">" ignoré
+                s = line.strip()+"$"  # stockage de la séquence
+                sa = tks.simple_kark_sort(s)  # stockage du suffix array sa
                 return s, sa
 
 
@@ -32,107 +32,74 @@ def get_seq(fasta: str):
 # Pour avoir la suffix array : sa = get_seq("smallMappingTest/reference.fasta")[1]
 
 
-
-def get_bwt(fasta: str) -> str:
+def get_bwt(fasta: str):
     """
     Fonction pour obtenir la transformee de Burrows Wheeler à partir du fichier de reference en entree.
     Grace à la fonction get_seq() on obtient la suffixe array qui va permettre la BWT
 
     :param fasta: sequence fasta de reference
-    :return: transformee de BW
+    :return: transformee de BW, suffix array
     """
-    bwt = ""
-    s = get_seq(fasta)[0]
-    sa = get_seq(fasta)[1]
-    for i in range(len(sa)):
-        if sa[i] == 0:
+    bwt = "" 
+    sequence = get_seq(fasta)  # appel de get_seq() pour obtenir s et sa
+    s = sequence[0]
+    sa = sequence[1]
+    for i in range(len(sa)):  # création de la burrows wheeler
+        if sa[i] == 0: 
             bwt += "$"
         else:
-            bwt += s[sa[i] - 1]
-    return bwt
+            bwt += s[sa[i] - 1] 
+    return bwt, sa
 
 
-'''
-test :
-s = get_seq("smallMappingTest/reference.fasta")[0]
-sa = get_seq("smallMappingTest/reference.fasta")[1]
-'''
+def get_r_n(bwt):
+    
+    """
+    Fonction pour obtenir à partir de la transformee de burrows wheeler, le dictionnaire n du nombre d'occurences pour
+    chaque nucléotides et la liste r des rangs de chaque caractères dans la séquence de références.
 
-# Test de la fonction :
-
-#bwt = get_bwt("smallMappingTest/reference.fasta")
-#print(bwt)
-
-
-
-
-def get_n(fasta: str) -> {}:
-    n = {"$": 0, "A": 0, "C": 0, "G": 0, "T": 0}  # key = letter, value = number of occurrences
-    for letter in get_bwt(fasta):
-        n[letter] += 1
-    return n
-
-
-def get_r(fasta: str) -> {}:
-    n = {}  # key = letter, value = number of occurrences
-    r = []  # for each i: rank of the i^th value in bwt
-    for letter in get_bwt(fasta):
+    :param bwt: la transformee de burrows wheeler
+    :return: liste des rangs r de chaque nucléotides dans la séquence de références, dictionnaire n du nombre
+            d'occurences de chaques nucléotides
+    """
+    n = {"$": 0, "A": 0, "C": 0, "G": 0, "T": 0}  # clé = nucléotide + $, valeur = nombre d'occurences
+    r = []  # pour chaque lettre son rang dans la séquence de référence
+    
+    for letter in bwt:  # implémentation de n et r
         if letter not in n:
             n[letter] = 0
         n[letter] += 1
         r.append(n[letter])
-    return r
-
-
-
-#n = get_n("smallMappingTest/reference.fasta")
-#print(n)
-#r = get_r("smallMappingTest/reference.fasta")
-#print(r)
-#print(n)
-
+        
+    return r, n
 
 
 def get_fmi(ref_fasta, output_file):
     """
     Fonction qui creer le FMindex avec :
         L : BWT
-        sa :
+        sa : suffix array 
         n : nombre de chaque caractere
         r : rang de chaque caractere
     :param ref_fasta : sequence fasta de reference
     :param output_file : fichier de sortie contenant le FMI
-    :return:
+    :return: 
     """
-    bwt = ""
-    sa = get_seq(ref_fasta)[1]
-    n = get_n(ref_fasta)
-    r = get_r(ref_fasta)
-    for i in range(len(get_seq(ref_fasta)[0])):
-        bwt += get_bwt(ref_fasta)[i]
-    with open(output_file, "wb") as f1:
-        pickle.dump((bwt, sa, n, r), f1)
+    res_bwt = get_bwt(ref_fasta)  # obtention de : transformee de burrows wheeler + suffix array
+    
+    bwt = res_bwt[0]  # transformee de burrows wheeler
+
+    sa = res_bwt[1]  # suffix array
+    
+    res_n_r = get_r_n(res_bwt[0])  # obtention de n et r 
+    
+    n = res_n_r[1]  # n
+    
+    r = res_n_r[0]  # r
+    
+    with open(output_file, "wb") as f1:  # stockage de bwt, sa , r et n dans un pickle du nom de "output_file"
+        pickle.dump((bwt, sa, n, r), f1) 
     return bwt, sa, n, r
-
-
-
-# verification fonction get_fmi
-my_fmi1 = get_fmi("smallMappingTest/reference.fasta",'dumped_index.dp')
-print(my_fmi1[0])# bwt
-len(my_fmi[0])
-my_fmi[1] # sa
-my_fmi[2] # n
-my_fmi[3] # r
-
-
-
-# Verification du fichier :
-verif = None
-print(verif)
-with open('dumped_index3.dp', "rb") as f1:
-    verif = pickle.load(f1)
-type(verif)
-print(verif)
 
 
 if __name__ == "__main__":
@@ -153,9 +120,9 @@ if __name__ == "__main__":
         elif option in ("-o", "--out"):
             out_file = arg
 
-
     get_fmi(ref_file, out_file)
     print('Reference file is ', ref_file)
     print('Output file is ', out_file)
 
-# python index_opti.py --ref smallMappingTest/reference.fasta --out dumped_index2.dp
+# python index.py --ref smallMappingTest/reference.fasta --out dumped_index_small.dp
+# python index.py --ref coli/ecoli_sample.fasta --out dumped_index_coli.dp

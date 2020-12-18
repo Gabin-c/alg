@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pickle
-import fill_matrix_opti as matrix
+import fill_matrix as matrix
 import getopt
 import sys
 import time
@@ -22,7 +22,7 @@ def get_my_fmi(index):
         my_fmi = pickle.load(f1)
         return my_fmi
 
-
+get_my_fmi('smallMappingTest/dumped_index_small.dp')
 def left_first(alpha: chr, k: int, n: {}) -> int:
     """
     Fonction pour connaitre la position des suffixe commençant par un caractère
@@ -380,10 +380,12 @@ if __name__ == "__main__":
         elif option in "--out":
             output = arg
 
-
+t1 = time.time()
 mapping(reference, index_file, read_file, k_mers, hamming, abundance, output)
-# python map.py --ref smallMappingTest/reference.fasta --index dumped_index.dp --reads smallMappingTest/reads.fasta -k 19 --max_hamming 5 --min_abundance 3 --out snps.vcf
+t2 = time.time()
+print(t2-t1)
+# python map.py --ref smallMappingTest/reference.fasta --index smallMappingTest/dumped_index_small.dp --reads smallMappingTest/reads.fasta -k 19 --max_hamming 5 --min_abundance 1 --out smallMappingTest/snps_ref_k19_d5.vcf
 
 
-# python map.py --ref coli/ecoli_sample.fasta --index dumped_index5.dp --reads coli/ecoli_mutated_reads_1000.fasta -k 20 --max_hamming 10 --min_abundance 1 --out snps.vcf
+# python map.py --ref coli/ecoli_sample.fasta --index coli/dumped_index_coli.dp --reads coli/ecoli_mutated_reads_1000.fasta -k 20 --max_hamming 10 --min_abundance 1 --out coli/snps_coli_k20_d10_ab1.vcf
 
