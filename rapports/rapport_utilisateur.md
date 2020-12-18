@@ -17,9 +17,9 @@ stocker dans un fichier. Ce FM index  se présente sous la forme d'un tuple cont
   - Le nombre n de chaque caractère
   - Le rang r de chaque caractère 
   
-
-    FMI = ('BWT', [SA], {n}, [r])    
-
+```shell
+FMI = ('BWT', [SA], {n}, [r])    
+```
 - Le deuxième fichier *map.py* a pour but de mapper les reads sur la séquence du génome de référence en utilisant le 
 FM index créé précédemment. Cela dans le but de détecter des variants (SNPs) et de les stocker dans un fichier VCF sous
 la forme suivante :
@@ -30,7 +30,7 @@ la forme suivante :
     #MAX_SUBST: maximum de substitution
     #MIN_ABUNDANCE: minimum d'abondance des SNPs
     POS REF ALT ABUNDANCE
-````
+```
 
 
 ### Commandes à utiliser
