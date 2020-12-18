@@ -79,4 +79,4 @@ EN FONCTION DES VALEURS DES PARAMETRES
 Cette partie inclura une discussion et des conclusions quant aux qualités et défauts de
 l'approche proposée, et guidera l'utilisateur sur le choix des paramètres.
 
-### Paragraphe sur covid
+## PARTIE 3 : LES DONNÉES COVID
