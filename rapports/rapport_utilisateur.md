@@ -33,7 +33,7 @@ la forme suivante :
 ```
 
 
-### Commandes à utiliser
+### Utilisation des programmes 
 Le programme fonctionne en ligne de commande grâce à deux commandes spécifiques. La première pour la création du FM indexe :
 
 ```shell script
