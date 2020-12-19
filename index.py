@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Indexer le genome de reference fourni en fasta (FM-index)
+# Indexer le genome de reference au format fasta fourni (FM-index)
 
 import tools_karkkainen_sanders as tks
 import getopt
@@ -11,7 +11,7 @@ import pickle
 
 def get_seq(fasta: str):
     """
-    Fonction pour avoir la sequence sans prendre en compte la premiere ligne du fichier fasta commençant par ">".
+    Fonction qui permet d'avoir la sequence sans prendre en compte la premiere ligne du fichier fasta commençant par ">".
     Elle va ouvrir le fichier entre en parametre puis lire la deuxieme ligne et en faire le suffixe array
 
     :param fasta: sequence fasta de reference
@@ -34,7 +34,7 @@ def get_seq(fasta: str):
 
 def get_bwt(fasta: str):
     """
-    Fonction pour obtenir la transformee de Burrows Wheeler à partir du fichier de reference en entree.
+    Fonction qui permet d'obtenir la transformee de Burrows Wheeler à partir du fichier de reference en entree.
     Grace à la fonction get_seq() on obtient la suffixe array qui va permettre la BWT
 
     :param fasta: sequence fasta de reference
@@ -55,14 +55,14 @@ def get_bwt(fasta: str):
 def get_r_n(bwt):
     
     """
-    Fonction pour obtenir à partir de la transformee de burrows wheeler, le dictionnaire n du nombre d'occurences pour
+    Fonction qui permet d'obtenir à partir de la transformee de burrows wheeler, le dictionnaire n du nombre d'occurences pour
     chaque nucléotides et la liste r des rangs de chaque caractères dans la séquence de références.
 
     :param bwt: la transformee de burrows wheeler
     :return: liste des rangs r de chaque nucléotides dans la séquence de références, dictionnaire n du nombre
             d'occurences de chaques nucléotides
     """
-    n = {"$": 0, "A": 0, "C": 0, "G": 0, "T": 0}  # clé = nucléotide + $, valeur = nombre d'occurences
+    n = {"$": 0, "A": 0, "C": 0, "G": 0, "T": 0}  # clé = nucléotides + $, valeur = nombre d'occurences
     r = []  # pour chaque lettre son rang dans la séquence de référence
     
     for letter in bwt:  # implémentation de n et r
