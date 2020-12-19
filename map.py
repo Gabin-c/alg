@@ -8,7 +8,8 @@ import sys
 import time
 
 
-# Ce programme a pour but de mapper des reads sur une séquence de référence afin d'avoir un fichier vcf de la forme :
+# Ce programme a pour but de mapper des reads sur une séquence de référence en relevant les différentes substitutions 
+# que peut contenir l'alignement et de sortir ses différences dans un fichier SNPs au format vcf :
 # POSITION / REFERENCE / ALTERNATIF / ABONDANCE
 
 def get_my_fmi(index):
@@ -25,7 +26,7 @@ def get_my_fmi(index):
 get_my_fmi('smallMappingTest/dumped_index_small.dp')
 def left_first(alpha: chr, k: int, n: {}) -> int:
     """
-    Fonction pour connaitre la position des suffixe commençant par un caractère
+    Fonction qui permet de connaitre la position des suffixe commençant par un caractère
 
     :param alpha: Caractère ($, A, C, G ou T) dont on veut connaitre la ligne
     :param k: Rang du caractère demandé
@@ -53,7 +54,7 @@ def get_down(bwt: str, alpha: chr, start: int, stop: int) -> int:
     """
     Détecte la première occurrence d'alpha dans la BWT pour i dans [start, stop].
 
-    A partir du départ, descendre dans la bwt aussi longtemps que bwt[line] != alpha et line <= stop
+    A partir du départ, descends dans la bwt aussi longtemps que bwt[line] != alpha et line <= stop
       - si bwt[line] == alpha, renvoie la ligne correspondante
       - si ligne > stop : renvoie -1
 
@@ -75,7 +76,7 @@ def get_up(bwt: str, alpha: chr, start: int, stop: int) -> int:
     """
         Détecte la première occurrence d'alpha dans la BWT pour i dans [start, stop].
 
-    A partir du départ, descendre dans la bwt aussi longtemps que bwt[line] != alpha et line >= start
+    A partir du départ, descends dans la bwt aussi longtemps que bwt[line] != alpha et line >= start
       - si bwt[line] == alpha, renvoie la ligne correspondante
       - si ligne > stop : renvoie -1
 
@@ -98,7 +99,7 @@ def get_occurrences(pattern: str, bwt: str, n: {}, r: [], sa: [int]) -> []:
     Retourne les positions des occurences du pattern dans la séquence de référence à l'aide de bwt, sa , n , r.
     On obtient en sortie une liste des positions des occurences.
     
-    :param pattern: séquencce à tester
+    :param pattern: séquence à tester
     :param bwt: Transformée de BW : my_fmi[0]
     :param n: nombre de chaque caractere
     :param r: rang de chaque caractere
@@ -142,6 +143,12 @@ def bwt_2_seq(bwt: str, n: {}, r: []) -> str:
     return sequence_reconstructed
 
 def reverse_complement(seq):
+    """
+    Fonction qui permet d'obtenir le reverse complément de la séquence passer en paramètre
+    
+    :param seq: Sequence de nucléotides
+    :return: Reverse complement de seq
+    """
     alt_map = {'ins': '0'}
     complement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A'}
 
@@ -157,13 +164,13 @@ def reverse_complement(seq):
 
 def get_kmer_position(k: int, reads: str, index) -> {}:
     """
-    Retourne un dictionnaire contenant les kmer et leurs positions possibles pour chaque read :
+    Retourne un dictionnaire pour chaque brin contenant les kmer et leurs positions possibles pour chaque read :
     {Read: {k-mer: [position]}}
 
     :param k: longueur du kmer
     :param reads: fichier fasta de reads
     :param index: fichier contenant la FM index
-    :return: un dictionnaire {Read: {k-mer: [position]}}
+    :return: deux dictionnaires {Read: {k-mer: [position]}}
     """
     my_fmi = get_my_fmi(index)  # stockage du FM index
     with open(reads, 'r') as reads_file:  # lecture du fichier de reads
@@ -174,12 +181,13 @@ def get_kmer_position(k: int, reads: str, index) -> {}:
             if line[0] != ">":
                 read_line = line.strip()  # retire les lignes qui ne sont pas des reads
                 read_line_complement = reverse_complement(read_line)
-                start = -1  # -1 car sinon ça commence à la deuxième lettre du read
+                start = -1  # -1 car sinon commence à la deuxième lettre du read
                 start_reverse = -1
                 end = k - 1  # longueur du k-mer
                 end_reverse = k - 1
                 kmer_position[read_line] = {}  # dictionnaire avec les reads
                 kmer_reverse_position[read_line_complement] = {}
+                # read initial
                 for kmers in range(start, len(read_line), k):  # recherche du k-mer sur le genome de reference
                     while end <= len(read_line)-1:
                         start += 1
@@ -189,7 +197,8 @@ def get_kmer_position(k: int, reads: str, index) -> {}:
                         if len(read_line[start:end]) == k:  # ne garde que les kmer faisant la taille demandée
                             occ = get_occurrences(read_line[start:end], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])
                             kmer_position[read_line][read_line[start:end]] += occ
-                            # ajout des occurences dans le
+                            # ajout des occurences dans le dictionaire
+                #  read reverse complement 
                 for kmers in range(start_reverse, len(read_line_complement), k):  # recherche du k-mer sur le genome de reference
                     while end_reverse <= len(read_line_complement)-1:
                         start_reverse += 1
@@ -200,19 +209,33 @@ def get_kmer_position(k: int, reads: str, index) -> {}:
                             occ = get_occurrences(read_line_complement[start_reverse:end_reverse], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])
 
                             kmer_reverse_position[read_line_complement][read_line_complement[start_reverse:end_reverse]] += occ
-                            # ajout des occurences dans le
+                            # ajout des occurences dans le dictionnaire
 
         return kmer_position, kmer_reverse_position
 
 
 def fill_vcf(mat, dict_final, sequence_initiale):
-    for cle, valeur in dict_final.items():
+    """
+    Fonction qui permet le remplissage d'une matrice au format vcf : POSITION / REFERENCE / ALTERNATIF / ABONDANCE à partir d'un dictionnaire read:position et de d'une sequence de référence.
+   
+    
+    :param mat: matrice [[],[],[],[]]
+    :param dict_final: dictionnaire read:position
+    :param sequence_intiale: Sequence de référence
+    
+    :return: la matrice mat remplit avec les SNPs
+    
+    """
+    for cle, valeur in dict_final.items(): # Parcours du dictionnaire read:position
         pos_read = 0
-        for read, refer in zip(cle, sequence_initiale[valeur:(valeur + 100)]):
+        for read, refer in zip(cle, sequence_initiale[valeur:(valeur + 100)]): # Parcours de chaque nucléotide du read et de la sequence où le read s'aligne
+            # Si il y a une substitution.
             if read != refer:
+                # Si la substitution a déja été pris en compte
                 if (valeur + pos_read) in mat[0]:
                     y = mat[0].index((valeur + pos_read))
                     mat[3][y] += 1
+                # Si la substitution n'a pas encore été pris en compte
                 else:
                     mat[0].append((valeur + pos_read))
                     mat[1].append(refer)
@@ -223,6 +246,13 @@ def fill_vcf(mat, dict_final, sequence_initiale):
 
 
 def order_vcf(tab_vcf):
+    """
+    Fonction permettant de mettre en ordre en fonction de la position une table vcf au format : POSITION / REFERENCE / ALTERNATIF / ABONDANCE
+    
+    :param tab_vcf: matrice [[],[],[],[]] au format vcf
+    :return: une nouvelle matrice rangé par position
+    
+    """
 
     pos_sorted = sorted(tab_vcf[0])
     new_mat = [[],[],[],[]]
@@ -257,7 +287,7 @@ def mapping(ref, index, reads: str, k: int, max_hamming: int, min_abundance: int
     # CREATION DU DICTIONNAIRE {Read:{k-mer:[position]}} contenant les positions des occurences k-mers pour chaque read
     dict_kmer_position = get_kmer_position(k, reads, index)
 
-        # Recherche des MEILLEURES POSITIONS D'ALIGNEMENT
+    # RECHERCHE DES MEILLEURES POSITIONS D'ALIGNEMENT
     dict_final_sens = {}  # Créer un dictionnaire qui contiendra les meilleures positions d'alignement pour chaque read.
     dict_final_reverse = {}
     key_dict_sens = list(dict_kmer_position[0].keys())  # stockage des différentes reads à alignés
@@ -291,7 +321,7 @@ def mapping(ref, index, reads: str, k: int, max_hamming: int, min_abundance: int
                         dict_final_sens[key_dict_sens[i]] = position_finale
             pos_r += 1
         i += 1
-    # Dictionnaire dict_final {Read: Position} ne contenant que la meilleure position d'alignement pour chaque read.
+    # Dictionnaire dict_final_sens {Read: Position} ne contenant que la meilleure position d'alignement pour chaque read du brin +.
 
     i = 0  # permet de déterminer la read que l'on aligne sur le génome
     for kmer in dict_kmer_position[1].values():  # lecture de chaque dictionnaire associé aux reads
@@ -318,20 +348,23 @@ def mapping(ref, index, reads: str, k: int, max_hamming: int, min_abundance: int
                         dict_final_reverse[key_dict_reverse[i]] = position_finale
             pos_r += 1
         i += 1
+        # Dictionnaire dict_final_reverse {Read: Position} ne contenant que la meilleure position d'alignement pour chaque read du brin -.
 
-
-    mat = [[], [], [], []]
+  
     # CREATION DE LA TABLE VCF
-    tab_vcf = fill_vcf(mat, dict_final_sens, sequence_initiale)
-    tab_vcf = fill_vcf(tab_vcf, dict_final_reverse, sequence_initiale)
-    tab_vcf = order_vcf(tab_vcf)
-
+    mat = [[], [], [], []] # initialisation de la table vcf
+    tab_vcf = fill_vcf(mat, dict_final_sens, sequence_initiale) # Remplissage de la table vcf avec les reads brin + alignés
+    tab_vcf = fill_vcf(tab_vcf, dict_final_reverse, sequence_initiale) # Remplissage de la matrice avec les reads brin - alignés
+    tab_vcf = order_vcf(tab_vcf) # Ragement de la matrice vcf
+    
+    # ECRITURE DU FICHIER VCF
     with open(out_file, 'w') as vcf:
         # Ecriture des 1eres lignes du fichier :
         vcf.write("#REF: " + ref + "\n""#READS: " + reads +
                   "\n"'#K: ' + str(k) + '\n''#MAX_SUBST: ' +
                   str(max_hamming) + '\n''#MIN_ABUNDANCE: ' + str(min_abundance) + '\n')
-
+        
+        # Ecriture des données de table vcf en fonction de l'abondance minimum retenu
         i = 0
         while i < len(tab_vcf[0]):
             if tab_vcf[3][i] >= min_abundance:
