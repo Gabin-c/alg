@@ -193,10 +193,17 @@ def get_kmer_position(k: int, reads: str, index) -> {}:
                         start += 1
                         end += 1
                         occ = []
+                        #occ_rev = []
                         kmer_position[read_line][read_line[start:end]] = occ  # dictionnaire kmer : position
+                        #kmer_reverse_position[read_line_complement][read_line_complement[start:end]] = occ_rev
                         if len(read_line[start:end]) == k:  # ne garde que les kmer faisant la taille demandée
                             occ = get_occurrences(read_line[start:end], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])
                             kmer_position[read_line][read_line[start:end]] += occ
+                            # ajout des occurences dans le dictionaire
+                        #elif len(read_line_complement[start_reverse:end_reverse]) == k:  # ne garde que les kmer faisant la taille demandée
+                            #occ_rev = get_occurrences(read_line_complement[start:end], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])
+
+                            #kmer_reverse_position[read_line_complement][read_line_complement[start:end]] += occ_rev
                             # ajout des occurences dans le dictionaire
                 #  read reverse complement 
                 for kmers in range(start_reverse, len(read_line_complement), k):  # recherche du k-mer sur le genome de reference
