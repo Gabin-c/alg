@@ -349,9 +349,9 @@ if __name__ == "__main__":
     reference = ''
     index_file = ''
     read_file = ''
-    k_mers = 1
-    hamming = 1
-    abundance = 0
+    k_mers = 20
+    hamming = 10
+    abundance = 7
     output = ''
     try:
         opts, args = getopt.getopt(sys.argv[1:], "k:h",
