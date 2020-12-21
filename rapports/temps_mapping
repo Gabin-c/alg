@@ -56,6 +56,14 @@ k20, d10, ab7 -> 603 secondes soit 10 minutes
                     Precision 99.3 %
                     Recall 98.7 %
 
+                    Nb Variants 1004 in truth
+Nb TP 995 in truth & in pred
+Nb FP 3 not in truth & in pred
+Nb FN 9 in truth & not in pred
+Precision 99.7 %
+Recall 99.1 %
+
+
 k20, d10, ab8 -> 600 secondes soit 10 minutes
                     Nb Variants 1004 in truth
                     Nb TP 988 in truth & in pred

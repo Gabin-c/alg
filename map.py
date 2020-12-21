@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import pickle
-import fill_matrix as matrix
 import getopt
 import sys
 import time
@@ -23,7 +22,7 @@ def get_my_fmi(index):
         my_fmi = pickle.load(f1)
         return my_fmi
 
-get_my_fmi('smallMappingTest/dumped_index_small.dp')
+
 def left_first(alpha: chr, k: int, n: {}) -> int:
     """
     Fonction qui permet de connaitre la position des suffixe commençant par un caractère
@@ -142,24 +141,16 @@ def bwt_2_seq(bwt: str, n: {}, r: []) -> str:
         line = left_first(bwt[line], r[line], n)
     return sequence_reconstructed
 
+
 def reverse_complement(seq):
     """
-    Fonction qui permet d'obtenir le reverse complément de la séquence passer en paramètre
-    
-    :param seq: Sequence de nucléotides
-    :return: Reverse complement de seq
-    """
-    alt_map = {'ins': '0'}
-    complement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A'}
+        Fonction qui permet d'obtenir le reverse complément de la séquence passée en paramètre
 
-    for k,v in alt_map.items():
-        seq = seq.replace(k,v)
-    bases = list(seq)
-    bases = reversed([complement.get(base,base) for base in bases])
-    bases = ''.join(bases)
-    for k,v in alt_map.items():
-        bases = bases.replace(v,k)
-    return bases
+        :param seq: Séquence de nucléotides
+        :return: Reverse complement de seq
+        """
+    complement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A'}
+    return ''.join([complement[base] for base in seq[::-1]])
 
 
 def get_kmer_position(k: int, reads: str, index) -> {}:
@@ -177,47 +168,63 @@ def get_kmer_position(k: int, reads: str, index) -> {}:
 
         kmer_position = {}  # dictionnaire vide
         kmer_reverse_position = {}
+        nb_read = 0
+        pos_sens = 1
+        pos_rev = 2
+        readfasta = []
+
         for line in reads_file:
             if line[0] != ">":
                 read_line = line.strip()  # retire les lignes qui ne sont pas des reads
                 read_line_complement = reverse_complement(read_line)
+                readfasta.append(read_line)
+                readfasta.append(read_line_complement)
                 start = -1  # -1 car sinon commence à la deuxième lettre du read
                 end = k - 1  # longueur du k-mer
-                kmer_position[read_line] = {}  # dictionnaire avec les reads
-                kmer_reverse_position[read_line_complement] = {}
+                kmer_position[pos_sens] = {}  # dictionnaire avec les reads
+                kmer_reverse_position[pos_rev] = {}
                 # read initial
                 for kmers in range(start, len(read_line), k):  # recherche du k-mer sur le genome de reference
                     while end <= len(read_line)-1:
                         start += 1
                         end += 1
+
                         occ = []
                         occ_rev = []
-                        kmer_position[read_line][read_line[start:end]] = occ  # dictionnaire kmer : position
-                        kmer_reverse_position[read_line_complement][read_line_complement[start:end]] = occ_rev
-                        if len(read_line[start:end]) == k or len(read_line_complement[start:end]) == k :  # ne garde que les kmer faisant la taille demandée
+                        kmer_position[pos_sens][read_line[start:end]] = occ  # dictionnaire kmer : position
+                        kmer_reverse_position[pos_rev][read_line_complement[start:end]] = occ_rev
+                        if len(read_line[start:end]) == k or len(read_line_complement[start:end]) == k:  # ne garde que les kmer faisant la taille demandée
                             occ = get_occurrences(read_line[start:end], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])
-                            kmer_position[read_line][read_line[start:end]] += occ
-                            occ_rev = get_occurrences(read_line_complement[start:end], my_fmi[0], my_fmi[2], my_fmi[3],my_fmi[1])
-                            kmer_reverse_position[read_line_complement][read_line_complement[start:end]] += occ_rev
+                            kmer_position[pos_sens][read_line[start:end]] += occ
+                            occ_rev = get_occurrences(read_line_complement[start:end], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])
+                            kmer_reverse_position[pos_rev][read_line_complement[start:end]] += occ_rev
+                pos_sens += 2
+                pos_rev += 2
+                nb_read += 1
+        kmer_position = {**kmer_position, **kmer_reverse_position}
+        kmer_position = dict(sorted(kmer_position.items()))
+        return kmer_position, readfasta
 
-        return kmer_position, kmer_reverse_position
 
-
-def fill_vcf(mat, dict_final, sequence_initiale):
+def fill_vcf(mat, dict_final, sequence_initiale, read2):
     """
-    Fonction qui permet le remplissage d'une matrice au format vcf : POSITION / REFERENCE / ALTERNATIF / ABONDANCE à partir d'un dictionnaire read:position et de d'une sequence de référence.
+    Fonction qui permet le remplissage d'une matrice au format vcf : POSITION / REFERENCE / ALTERNATIF / ABONDANCE à
+    partir d'un dictionnaire read:position et de d'une sequence de référence.
    
     
     :param mat: matrice [[],[],[],[]]
     :param dict_final: dictionnaire read:position
-    :param sequence_intiale: Sequence de référence
+    :param sequence_initiale: Sequence de référence
+    :param read2 :
     
     :return: la matrice mat remplit avec les SNPs
     
     """
-    for cle, valeur in dict_final.items(): # Parcours du dictionnaire read:position
+    for cle, valeur in dict_final.items():  # Parcours du dictionnaire read:position
         pos_read = 0
-        for read, refer in zip(cle, sequence_initiale[valeur:(valeur + 100)]): # Parcours de chaque nucléotide du read et de la sequence où le read s'aligne
+        read3 = read2[(cle-1)]
+
+        for read, refer in zip(read3, sequence_initiale[valeur:(valeur + 100)]):  # Parcours de chaque nucléotide du read et de la sequence où le read s'aligne
             # Si il y a une substitution.
             if read != refer:
                 # Si la substitution a déja été pris en compte
@@ -244,7 +251,7 @@ def order_vcf(tab_vcf):
     """
 
     pos_sorted = sorted(tab_vcf[0])
-    new_mat = [[],[],[],[]]
+    new_mat = [[], [], [], []]
     for i in pos_sorted:
         for y, u in enumerate(tab_vcf[0]):
             if u == i:
@@ -278,9 +285,6 @@ def mapping(ref, index, reads: str, k: int, max_hamming: int, min_abundance: int
 
     # RECHERCHE DES MEILLEURES POSITIONS D'ALIGNEMENT
     dict_final_sens = {}  # Créer un dictionnaire qui contiendra les meilleures positions d'alignement pour chaque read.
-    dict_final_reverse = {}
-    key_dict_sens = list(dict_kmer_position[0].keys())  # stockage des différentes reads à alignés
-    key_dict_reverse = list(dict_kmer_position[1].keys())
     sequence_initiale = bwt_2_seq(fmi[0], fmi[2], fmi[3])  # récupération de la séquence initiale
 
     i = 0  # permet de déterminer la read que l'on aligne sur le génome
@@ -291,15 +295,16 @@ def mapping(ref, index, reads: str, k: int, max_hamming: int, min_abundance: int
         for pos in kmer.values():
             if pos:  # si il y a bien une position associé au k-mer
                 for position in pos:  # pour toute les positions du k-mer
-                    read = key_dict_sens[i]  # read numéro i
+                    read = dict_kmer_position[1][i]  # read numéro i
 
                     # CREATION D'UNE MATRICE D'ALIGNEMENT initialisée à 0 entre le read et son ancrage sur le génome
                     # La position du read sur le génome est déterminée par la position de l'alignement du k-mer sur le
                     # génome et la position du k-mer sur le read (pos_r).
                     # Le read s'alignera de la position "position - pos_r" à cette même position + la  longueur du read.
-                    dm = matrix.DynamicMatrix(read,
-                                              sequence_initiale[(position - pos_r):(position - pos_r + len(read))])
-                    fill_mat = dm.fillH()  # Calcul du score d'alignement
+                    fill_mat = 0
+                    for rea, seq in zip(read, sequence_initiale[(position - pos_r):(position - pos_r + len(read))]):
+                        if rea == seq:
+                            fill_mat += 1
 
                     # VERIFICATION DU SCORE
                     # si le score est plus grand que le précédent et respecte le nombre max de substitutions autorisé
@@ -307,44 +312,13 @@ def mapping(ref, index, reads: str, k: int, max_hamming: int, min_abundance: int
                     if score < fill_mat and fill_mat >= (len(read) - max_hamming):
                         position_finale = (position - pos_r)
                         score = fill_mat
-                        dict_final_sens[key_dict_sens[i]] = position_finale
+                        dict_final_sens[(i+1)] = position_finale
             pos_r += 1
         i += 1
-    # Dictionnaire dict_final_sens {Read: Position} ne contenant que la meilleure position d'alignement pour chaque read du brin +.
 
-    i = 0  # permet de déterminer la read que l'on aligne sur le génome
-    for kmer in dict_kmer_position[1].values():  # lecture de chaque dictionnaire associé aux reads
-        #  lecture de chaque position associée aux k-mers
-        pos_r = 0  # position du k-mer sur le read. Le premier kmer commence toujours sur le premier nucléotide du read
-        score = 0  # score de l'alignement entre le read et son ancrage sur le génome de référence
-        for pos in kmer.values():
-            if pos:  # si il y a bien une position associée au k-mer
-                for position in pos:  # pour toute les positions du k-mer
-                    read = key_dict_reverse[i]  # read numéro i
-                    # CREATION D'UNE MATRICE D'ALIGNEMENT initialisée à 0 entre le read et son ancrage sur le génome
-                    # La position du read sur le génome est déterminée par la position de l'alignement du k-mer sur le
-                    # génome et la position du k-mer sur le read (pos_r).
-                    # Le read s'alignera de la position "position - pos_r" à cette même position + la  longueur du read.
-                    dm = matrix.DynamicMatrix(read,
-                                              sequence_initiale[(position - pos_r):(position - pos_r + len(read))])
-                    fill_mat = dm.fillH()  # Calcul du score d'alignement
-                    # VERIFICATION DU SCORE
-                    # si le score est plus grand que le précédent et respecte le nombre max de substitutions autorisé
-                    # alors le score prédédent et la meilleur position d'alignement remplacé
-                    if score < fill_mat and fill_mat >= (len(read) - max_hamming):
-                        position_finale = (position - pos_r)
-                        score = fill_mat
-                        dict_final_reverse[key_dict_reverse[i]] = position_finale
-            pos_r += 1
-        i += 1
-        # Dictionnaire dict_final_reverse {Read: Position} ne contenant que la meilleure position d'alignement pour chaque read du brin -.
-
-  
-    # CREATION DE LA TABLE VCF
-    mat = [[], [], [], []] # initialisation de la table vcf
-    tab_vcf = fill_vcf(mat, dict_final_sens, sequence_initiale) # Remplissage de la table vcf avec les reads brin + alignés
-    tab_vcf = fill_vcf(tab_vcf, dict_final_reverse, sequence_initiale) # Remplissage de la matrice avec les reads brin - alignés
-    tab_vcf = order_vcf(tab_vcf) # Ragement de la matrice vcf
+    mat = [[], [], [], []]  # initialisation de la table vcf
+    tab_vcf = fill_vcf(mat, dict_final_sens, sequence_initiale, dict_kmer_position[1])
+    tab_vcf = order_vcf(tab_vcf)
     
     # ECRITURE DU FICHIER VCF
     with open(out_file, 'w') as vcf:
@@ -363,8 +337,7 @@ def mapping(ref, index, reads: str, k: int, max_hamming: int, min_abundance: int
             i += 1
 
 
-
-# mapping('smallMappingTest/reference.fasta', 'dumped_index.dp', 'smallMappingTest/reads.fasta', 20, 5, 2, 'snp15.vcf')
+mapping('smallMappingTest/reference.fasta', 'smallMappingTest/dumped_index_small.dp', 'smallMappingTest/reads.fasta', 20, 5, 1, 'snp15.vcf')
 
 
 if __name__ == "__main__":
@@ -406,8 +379,7 @@ t1 = time.time()
 mapping(reference, index_file, read_file, k_mers, hamming, abundance, output)
 t2 = time.time()
 print(t2-t1)
-# python map.py --ref smallMappingTest/reference.fasta --index smallMappingTest/dumped_index_small.dp --reads smallMappingTest/reads.fasta -k 19 --max_hamming 5 --min_abundance 1 --out smallMappingTest/snps_ref_k19_d5.vcf
 
-
-# python map.py --ref coli/ecoli_sample.fasta --index coli/dumped_index_coli.dp --reads coli/ecoli_mutated_reads_1000.fasta -k 20 --max_hamming 10 --min_abundance 1 --out coli/snps_coli_k20_d10_ab1.vcf
+#python map.py --ref smallMappingTest/reference.fasta --index smallMappingTest/dumped_index_small.dp --reads smallMappingTest/reads.fasta -k 20 --max_hamming 5 --min_abundance 1 --out smallMappingTest/snps_ref_k19_d5.vcf
+#python map.py --ref coli/ecoli_sample.fasta --index coli/dumped_index_coli.dp --reads coli/ecoli_mutated_reads_1000.fasta -k 20 --max_hamming 10 --min_abundance 7 --out coli/snps_coli_k20_d10_ab7.vcf
 
