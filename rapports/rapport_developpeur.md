@@ -62,28 +62,28 @@ Cette fonction va retourner un tableau de SNP au format vcf obtenu grâce à l'a
 
 La fonction se décompose en 3 étapes :
 - Création d'un dictionnaire contenant les positions d'alignement pour chaque 
-k-mer de chaque read
+k-mer de chaque read +/- 
 - Création d'un dictionnaire contenant la meilleur position d'alignement pour 
-chaque read
+chaque read +/-
 - Remplissage de la table des SNPs
 
-#### Etape 1 : Dictionnaire *{read: {kmer: positions}}*
+#### Etape 1 : Dictionnaire *{ Rang-read: {kmer: positions}}*
 Dans un premier temps le fichier contenant le FM index va être ouvert afin de rendre 
 accessible les différents éléments du FM index.
 
 
 ##### get_kmer_position(k, reads, index)
-Suite à cela les positions d'alignements des k-mers pour chaque read vont être stockées dans un dictionnaire par la fonction *get_kmer_position(k, reads)* avec 'k' la longueur des k-mers et 'reads' le fichier contenant les reads. Après l'utilisation de cette fonction on obtient donc un dictionnaire au format {Read: {K-mer: position}} pour chaque sens du brin.
+Suite à cela les positions d'alignements des k-mers pour chaque read vont être stockées dans un dictionnaire par la fonction *get_kmer_position(k, reads)* avec 'k' la longueur des k-mers et 'reads' le fichier contenant les reads. Après l'utilisation de cette fonction on obtient donc un dictionnaire au format {Rang-read: {K-mer: position}} ainsi qu'une liste des reads.
 
 Cette fonction permet d'obtenir la ou les positions de chaque kmer sur le brin sens et son reverse complement.
 
 #### Etape 2 : Dictionnaire <i>{read:position}</i> 
 Une fois qu'on a toutes les positions possibles pour un kmer, la fonction passe à l'étape de la localisation de la meilleure position d'alignement de chaque read sur le génome de référence pour cela *mapping()* utilise la trame suivante : 
-Chaque position associée au read du dictionnaire va être lue pour les brins sens et antisens. Ensuite un score d'alignement est calculé sans gap puis stocké. Enfin, la position avec le score le plus élevé est gardée en prenant en compte le nombre de substitutions maximum. On obtient un dictionnaire final qui contient la meilleure position d'alignement pour chaque read.
+Chaque position associée au read du dictionnaire va être lue. Ensuite un score d'alignement est calculé sans gap puis stocké. Enfin, la position avec le score le plus élevé est gardée en prenant en compte le nombre de substitutions maximum. On obtient un dictionnaire final qui contient la meilleure position d'alignement pour chaque read.
 
 #### Etape 3 : Table SNP
 Une fois le dictionnaire des meilleures positions d'alignement obtenu, on passe à l'étape de remplissage de la table de SNPs.Pour cela, on a deux fonctions :  
-- La première *fill_vcf(mat, dict_final, sequence_initiale)* pour remplir ce tableau - - La seconde *order_vcf(tab_vcf)* pour ordonner les SNPs selon l'ordre croissant des positions.  
+- La première *fill_vcf(mat, dict_final, sequence_initiale, list_read)* pour remplir ce tableau - - La seconde *order_vcf(tab_vcf)* pour ordonner les SNPs selon l'ordre croissant des positions.  
 Ce tableau est stocké dans un fichier au format vcf de la forme suivante :
 
 ```shell script
