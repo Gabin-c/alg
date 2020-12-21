@@ -311,9 +311,10 @@ def mapping(ref, index, reads: str, k: int, max_hamming: int, min_abundance: int
                     # La position du read sur le génome est déterminée par la position de l'alignement du k-mer sur le
                     # génome et la position du k-mer sur le read (pos_r).
                     # Le read s'alignera de la position "position - pos_r" à cette même position + la  longueur du read.
-                    dm = matrix.DynamicMatrix(read,
-                                              sequence_initiale[(position - pos_r):(position - pos_r + len(read))])
-                    fill_mat = dm.fillH()  # Calcul du score d'alignement
+                    fill_mat = 0
+                    for rea, seq in zip(read, sequence_initiale[(position - pos_r):(position - pos_r + len(read))]):
+                        if rea == seq:
+                            fill_mat += 1
 
                     # VERIFICATION DU SCORE
                     # si le score est plus grand que le précédent et respecte le nombre max de substitutions autorisé
@@ -344,7 +345,6 @@ def mapping(ref, index, reads: str, k: int, max_hamming: int, min_abundance: int
                     str(tab_vcf[0][i]) + '\t' + tab_vcf[1][i] + '\t' + tab_vcf[2][i] + '\t' + str(
                         tab_vcf[3][i]) + '\n')
             i += 1
-
 
 
 mapping('smallMappingTest/reference.fasta', 'smallMappingTest/dumped_index_small.dp', 'smallMappingTest/reads.fasta', 20, 5, 1, 'snp15.vcf')
