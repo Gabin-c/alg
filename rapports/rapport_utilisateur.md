@@ -39,7 +39,7 @@ Le programme fonctionne en ligne de commande grâce à deux commandes spécifiqu
 ```shell script
 python index.py --ref [genome_file.fa] --out [dumped_index.dp]
 ```
-Elle prendre donc en entrée (*'--ref'*) le fichier fasta de la séquence de référence et en sortie (*'--out'*) le fichier 
+Elle prend donc en entrée (*'--ref'*) le fichier fasta de la séquence de référence et en sortie (*'--out'*) le fichier 
 binaire de sortie contenant le FM index au format *dp*.
 
 
@@ -55,7 +55,13 @@ Cette commande prendre plusieurs arguments en compte :
 - *--max_hamming* : le nombre maximum de substitutions pour le mapping
 - *--min_abundance* : le minimum d'abondance des SNPs à considérer pour le fichier VCF
 - *--out* : le fichier VCF de sortie
-!!!!!-H POUR L'AIDE
+
+Pour obtenir l'aide des deux programmes et ainsi savoir la commande à taper ainsi que les paramètres par défaut on peut 
+faire comme ci-dessous : 
+````shell
+python index.py -h 
+python map.py -h
+````
  
 
 ## PARTIE II : *RÉSULTATS OBTENUS*
@@ -73,7 +79,7 @@ Suite à cela, nous pouvons donc passer à un jeu de données beaucoup plus impo
 ### Résultats pour *Escherichia coli*
 Nous avons donc un jeu de données correspondant à *Escherichia coli*. Il contient un fichier fasta des 150 000 premiers 
 nucléotides du génome de *Escherichia coli* et un fichier de 30 000 reads. Pour mapper ces 30 000 reads, notre programme
-a besoin de 120 secondes (2 minutes) quelque soient les paramètres pris en compte.  
+a besoin de 120 secondes (2 minutes) quels que soient les paramètres pris en compte.  
 Nous avons fait des tests avec différents paramètres afin de trouver ceux donnant les meilleurs résultats. Pour cela, nous
 avons fait étape par étape en partant des paramètres suivants :
 ```shell
@@ -85,10 +91,11 @@ Avec ces paramètres nous avons obtenu des résultats de faible qualité avec un
 26 902 SNPs faux positifs. Pour améliorer les résultats nous avons dans un premier temps augmenté l'abondance minimum petit
 à petit. A chaque augmentation, la précision augmentait et le nombre de faux positifs diminuait. Nous avons donc trouvé 
 le minimum d'abondance idéal qui est de 7. Il s'agit de l'abondance qui permet d'avoir le taux de précision le plus élevé
-et le taux de vrai positif le plus élevé. Voici le résultats ci-dessous avec une précision de 99.7% et un recall de 99.1%.
-Si on passe l'abondance au dessus de 7, le nombre de faux négatifs augmente (recall diminue) et la précision ne diminue que
+et le taux de vrai positif le plus élevé. Voici le résultat ci-dessous avec une précision de 99.7% et un recall de 99.1%.
+Si on passe une abondance supérieure à 7, le nombre de faux négatifs augmente (recall diminue) et la précision ne diminue que
 très légèrement.
 ```
+Pour k = 20, max_hamming = 10, min_abundance = 7 :
 Nb Variants 1004 in truth
 Nb TP 995 in truth & in pred
 Nb FP 3 not in truth & in pred
@@ -99,22 +106,22 @@ Recall 99.1 %
 Avec ces paramètres, nous avons pu voir que notre programme utilise environ 930 000kb de mémoire.
 Ensuite, nous avons donc gardé une abondance de 7 tout en faisant varier le maximum de substitution. En augmentant ce maximum,
 nous avons une précision qui diminue et en le diminuant on retrouve une augmentation du nombre de faux positifs. Nous avons 
-donc gardé un maximum de substition du 10 car l'utilisation mémoire n'était pas impactée par ce paramètre.  
-Pour finir, nous avons fait varié la longueur du kmer. L'augmentation de la longueur du kmer, le temps de calclul diminue 
-et l'utilisation mémoire diminue. En effet si on augmente à 50
-En augmentant sa longuer à 30, le temps n'est pas impacté mais l'utilisation mémoire diminue à 800 000kb. 
+donc gardé un maximum de substitution de 10 car l'utilisation mémoire n'était pas impactée par ce paramètre.  
+Pour finir, nous avons fait varier la longueur du kmer. L'augmentation de la longueur du kmer, le temps de calcul diminue 
+et l'utilisation mémoire diminue. En effet si on augmente à 50, on a un temps de calcul de 88 secondes et une utilisation mémoire 
+de 580 000kb. Cependant on perd en qualité car on retrouve 136 faux négatifs.
+En augmentant un peu moins la longueur du kmer (à 30), le temps n'est pas impacté mais l'utilisation mémoire diminue à 800 000kb. 
 De plus, la précision reste à 99.7%. Cependant le nombre de faux négatif passe de 9 à 12.  
 Il faut donc faire un choix entre diminution de l'utilisation mémoire ou diminution du nombre de faux négatifs. Nous avons fait 
 le second choix en gardant une longueur de kmer de 20.
+A l'inverse, en diminuant la longueur du kmer, on obtient des résultats identiques avec une précision identique. Seulement,
+l'utilisation de la mémoire augmente fortement (plus de 1GB) et le temps de calcul augmente légèrement.
 
-A FAIRE  
-!!!!!augmentation kmer : moins de temps??
-!!!!!diminution kmer : k10 on a les mêmes qualité mais plus de mémoire utilisée??
-
-Pour résumer, nous avons gardé en paramètres par défaut :
+Pour résumer, nous avons donc gardé en paramètres par défaut :
  - Une longueur de kmer de 20
  - Un maximum de substitution de 10
- - Un minimum d'abondance de 7
+ - Un minimum d'abondance de 7  
+
 Il est possible d'augmenter la taille des kmer jusqu'à 30 sans trop impacter la qualité des résultats pour avoir une utilisation
 mémoire plus faible. 
 

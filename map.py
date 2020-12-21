@@ -358,12 +358,15 @@ if __name__ == "__main__":
                                    ["ref=", "index=", "reads=", "max_hamming=", "min_abundance=", "out="])
 
     except getopt.GetoptError as err:
-        print(err)
+        print('Usage : \n python map.py --ref[genome_file.fa] --index[dumped_index.dp] '
+                  '--reads[reads.fa] -k[k_value] --max_hamming[h_value] --min_abundance[m_value] --out snps.vcf \n'
+                  'Default settings : \n - k = 20 \n - max_hamming = 10 \n - min_abundance = 7')
         sys.exit(2)
     for option, arg in opts:
         if option in "-h":
-            print('python map.py --ref[genome_file.fa] --index[dumped_index.dp] '
-                  '--reads[reads.fa] -k[k_value] --max_hamming[h_value] --min_abundance[m_value] --out snps.vcf')
+            print('Usage : \n python map.py --ref[genome_file.fa] --index[dumped_index.dp] '
+                  '--reads[reads.fa] -k[k_value] --max_hamming[h_value] --min_abundance[m_value] --out snps.vcf \n'
+                  'Default settings : \n - k = 20 \n - max_hamming = 10 \n - min_abundance = 7')
             sys.exit(2)
         elif option in "--reads":
             read_file = arg

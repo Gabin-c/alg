@@ -113,7 +113,7 @@ if __name__ == "__main__":
 
     for option, arg in opts:
         if option in "-h":
-            print('index.py --ref [genome_file.fa] --out [dumped_index.dp]')
+            print('Usage : \n index.py --ref [genome_file.fa] --out [dumped_index.dp]')
             sys.exit()
         elif option in ("-r", "--ref"):
             ref_file = arg
