@@ -182,9 +182,7 @@ def get_kmer_position(k: int, reads: str, index) -> {}:
                 read_line = line.strip()  # retire les lignes qui ne sont pas des reads
                 read_line_complement = reverse_complement(read_line)
                 start = -1  # -1 car sinon commence à la deuxième lettre du read
-                start_reverse = -1
                 end = k - 1  # longueur du k-mer
-                end_reverse = k - 1
                 kmer_position[read_line] = {}  # dictionnaire avec les reads
                 kmer_reverse_position[read_line_complement] = {}
                 # read initial
@@ -193,30 +191,14 @@ def get_kmer_position(k: int, reads: str, index) -> {}:
                         start += 1
                         end += 1
                         occ = []
-                        #occ_rev = []
+                        occ_rev = []
                         kmer_position[read_line][read_line[start:end]] = occ  # dictionnaire kmer : position
-                        #kmer_reverse_position[read_line_complement][read_line_complement[start:end]] = occ_rev
-                        if len(read_line[start:end]) == k:  # ne garde que les kmer faisant la taille demandée
+                        kmer_reverse_position[read_line_complement][read_line_complement[start:end]] = occ_rev
+                        if len(read_line[start:end]) == k or len(read_line_complement[start:end]) == k :  # ne garde que les kmer faisant la taille demandée
                             occ = get_occurrences(read_line[start:end], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])
                             kmer_position[read_line][read_line[start:end]] += occ
-                            # ajout des occurences dans le dictionaire
-                        #elif len(read_line_complement[start_reverse:end_reverse]) == k:  # ne garde que les kmer faisant la taille demandée
-                            #occ_rev = get_occurrences(read_line_complement[start:end], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])
-
-                            #kmer_reverse_position[read_line_complement][read_line_complement[start:end]] += occ_rev
-                            # ajout des occurences dans le dictionaire
-                #  read reverse complement 
-                for kmers in range(start_reverse, len(read_line_complement), k):  # recherche du k-mer sur le genome de reference
-                    while end_reverse <= len(read_line_complement)-1:
-                        start_reverse += 1
-                        end_reverse += 1
-                        occ = []
-                        kmer_reverse_position[read_line_complement][read_line_complement[start_reverse:end_reverse]] = occ  # dictionnaire kmer : position
-                        if len(read_line_complement[start_reverse:end_reverse]) == k:  # ne garde que les kmer faisant la taille demandée
-                            occ = get_occurrences(read_line_complement[start_reverse:end_reverse], my_fmi[0], my_fmi[2], my_fmi[3], my_fmi[1])
-
-                            kmer_reverse_position[read_line_complement][read_line_complement[start_reverse:end_reverse]] += occ
-                            # ajout des occurences dans le dictionnaire
+                            occ_rev = get_occurrences(read_line_complement[start:end], my_fmi[0], my_fmi[2], my_fmi[3],my_fmi[1])
+                            kmer_reverse_position[read_line_complement][read_line_complement[start:end]] += occ_rev
 
         return kmer_position, kmer_reverse_position
 
