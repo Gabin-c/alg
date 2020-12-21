@@ -55,7 +55,7 @@ Cette commande prendre plusieurs arguments en compte :
 - *--max_hamming* : le nombre maximum de substitutions pour le mapping
 - *--min_abundance* : le minimum d'abondance des SNPs à considérer pour le fichier VCF
 - *--out* : le fichier VCF de sortie
-
+!!!!!-H POUR L'AIDE
  
 
 ## PARTIE II : *RÉSULTATS OBTENUS*
@@ -75,18 +75,53 @@ Nous avons donc un jeu de données correspondant à *Escherichia coli*. Il conti
 nucléotides du génome de *Escherichia coli* et un fichier de 30 000 reads. Pour mapper ces 30 000 reads, notre programme
 a besoin de 120 secondes (2 minutes) quelque soient les paramètres pris en compte.  
 Nous avons fait des tests avec différents paramètres afin de trouver ceux donnant les meilleurs résultats. Pour cela, nous
-avons fait étape par étape en partant des paramètres suivant :
+avons fait étape par étape en partant des paramètres suivants :
 ```shell
 -k 20
 --max_hamming 10
 --min_abundance 1
 ```
+Avec ces paramètres nous avons obtenu des résultats de faible qualité avec une précision de 3.6%. En effet, on retrouvait
+26 902 SNPs faux positifs. Pour améliorer les résultats nous avons dans un premier temps augmenté l'abondance minimum petit
+à petit. A chaque augmentation, la précision augmentait et le nombre de faux positifs diminuait. Nous avons donc trouvé 
+le minimum d'abondance idéal qui est de 7. Il s'agit de l'abondance qui permet d'avoir le taux de précision le plus élevé
+et le taux de vrai positif le plus élevé. Voici le résultats ci-dessous avec une précision de 99.7% et un recall de 99.1%.
+Si on passe l'abondance au dessus de 7, le nombre de faux négatifs augmente (recall diminue) et la précision ne diminue que
+très légèrement.
+```
+Nb Variants 1004 in truth
+Nb TP 995 in truth & in pred
+Nb FP 3 not in truth & in pred
+Nb FN 9 in truth & not in pred
+Precision 99.7 %
+Recall 99.1 %
+```
+Avec ces paramètres, nous avons pu voir que notre programme utilise environ 930 000kb de mémoire.
+Ensuite, nous avons donc gardé une abondance de 7 tout en faisant varier le maximum de substitution. En augmentant ce maximum,
+nous avons une précision qui diminue et en le diminuant on retrouve une augmentation du nombre de faux positifs. Nous avons 
+donc gardé un maximum de substition du 10 car l'utilisation mémoire n'était pas impactée par ce paramètre.  
+Pour finir, nous avons fait varié la longueur du kmer. L'augmentation de la longueur du kmer, le temps de calclul diminue 
+et l'utilisation mémoire diminue. En effet si on augmente à 50
+En augmentant sa longuer à 30, le temps n'est pas impacté mais l'utilisation mémoire diminue à 800 000kb. 
+De plus, la précision reste à 99.7%. Cependant le nombre de faux négatif passe de 9 à 12.  
+Il faut donc faire un choix entre diminution de l'utilisation mémoire ou diminution du nombre de faux négatifs. Nous avons fait 
+le second choix en gardant une longueur de kmer de 20.
 
-mémoire utilisée entre 930000kb et 970000kb, diminue si on augmente le kmer mais la qualité des résultat en pati
-qualité des résultats
-EN FONCTION DES VALEURS DES PARAMETRES
+A FAIRE  
+!!!!!augmentation kmer : moins de temps??
+!!!!!diminution kmer : k10 on a les mêmes qualité mais plus de mémoire utilisée??
 
-Cette partie inclura une discussion et des conclusions quant aux qualités et défauts de
-l'approche proposée, et guidera l'utilisateur sur le choix des paramètres.
+Pour résumer, nous avons gardé en paramètres par défaut :
+ - Une longueur de kmer de 20
+ - Un maximum de substitution de 10
+ - Un minimum d'abondance de 7
+Il est possible d'augmenter la taille des kmer jusqu'à 30 sans trop impacter la qualité des résultats pour avoir une utilisation
+mémoire plus faible. 
+
+En voyant ces résultats nous pouvons dire que notre approche permet d'obtenir des résultats de qualité avec les paramètre 
+par défaut. De plus, elle permet un mapping relativement rapide. En revanche, l'utilisation mémoire semble élevée et nous 
+n'avons pas su la diminuer.
+
+
 
 ## PARTIE 3 : LES DONNÉES COVID
