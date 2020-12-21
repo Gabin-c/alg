@@ -316,7 +316,7 @@ def mapping(ref, index, reads: str, k: int, max_hamming: int, min_abundance: int
                     # VERIFICATION DU SCORE
                     # si le score est plus grand que le précédent et respecte le nombre max de substitutions autorisé
                     # alors le score prédédent et la meilleur position d'alignement remplacé
-                    if score < score_ali and fill_mat >= (len(read) - max_hamming):
+                    if score < score_ali and score_ali >= (len(read) - max_hamming):
                         position_finale = (position - pos_r)
                         score = score_ali
                         dict_final[(i+1)] = position_finale
