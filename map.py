@@ -337,7 +337,7 @@ def mapping(ref, index, reads: str, k: int, max_hamming: int, min_abundance: int
             i += 1
 
 
-mapping('smallMappingTest/reference.fasta', 'smallMappingTest/dumped_index_small.dp', 'smallMappingTest/reads.fasta', 20, 5, 1, 'snp15.vcf')
+# mapping('smallMappingTest/reference.fasta', 'smallMappingTest/dumped_index_small.dp', 'smallMappingTest/reads.fasta', 20, 5, 1, 'snp15.vcf')
 
 
 if __name__ == "__main__":

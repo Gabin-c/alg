@@ -1,99 +1,130 @@
 Pour coli :
 
-k20, d10, ab1 -> 590 secondes soit 9.8 minutes
+k20, d10, ab1 ->
+                  > execution time : 118.62729525566101 sec
+                  > memory peak    : 933880 kB
+
+
                     Nb Variants 1004 in truth
-                    Nb TP 993 in truth & in pred
-                    Nb FP 26906 not in truth & in pred
-                    Nb FN 11 in truth & not in pred
+                    Nb TP 997 in truth & in pred
+                    Nb FP 26902 not in truth & in pred
+                    Nb FN 7 in truth & not in pred
                     Precision 3.6 %
-                    Recall 98.9 %
+                    Recall 99.3 %
 
-k20, d10, ab2 -> 602 secondes soit 10 minutes
+
+k20, d10, ab2 ->
+ > execution time : 119.25223636627197 sec
+ > memory peak    : 975848 kB
+                    Nb Variants 1004 in truth
+                    Nb TP 997 in truth & in pred
+                    Nb FP 2569 not in truth & in pred
+                    Nb FN 7 in truth & not in pred
+                    Precision 28.0 %
+                    Recall 99.3 %
+
+k20, d10, ab3 ->
+ > execution time : 117.86887693405151 sec
+ > memory peak    : 934008 kB
+
+                    Nb Variants 1004 in truth
+                    Nb TP 996 in truth & in pred
+                    Nb FP 169 not in truth & in pred
+                    Nb FN 8 in truth & not in pred
+                    Precision 85.5 %
+                    Recall 99.2 %
+
+k20, d10, ab4 ->
+ > execution time : 118.2832190990448 sec
+ > memory peak    : 941032 kB
+
+                    Nb Variants 1004 in truth
+                    Nb TP 996 in truth & in pred
+                    Nb FP 16 not in truth & in pred
+                    Nb FN 8 in truth & not in pred
+                    Precision 98.4 %
+                    Recall 99.2 %
+
+
+k20, d10, ab5 ->
+ > execution time : 118.61164593696594 sec
+ > memory peak    : 941712 kB
+
+                    Nb Variants 1004 in truth
+                    Nb TP 996 in truth & in pred
+                    Nb FP 6 not in truth & in pred
+                    Nb FN 8 in truth & not in pred
+                    Precision 99.4 %
+                    Recall 99.2 %
+
+
+k20, d10, ab6 ->
+ > execution time : 118.90839266777039 sec
+ > memory peak    : 961492 kB
+                    Nb Variants 1004 in truth
+                    Nb TP 995 in truth & in pred
+                    Nb FP 5 not in truth & in pred
+                    Nb FN 9 in truth & not in pred
+                    Precision 99.5 %
+                    Recall 99.1 %
+
+
+k20, d10, ab7 ->
+ > execution time : 120.01620173454285 sec
+ > memory peak    : 1010576 kB
+
+                    Nb Variants 1004 in truth
+                    Nb TP 995 in truth & in pred
+                    Nb FP 3 not in truth & in pred
+                    Nb FN 9 in truth & not in pred
+                    Precision 99.7 %
+                    Recall 99.1 %
+
+
+k20, d10, ab8 ->
+ > execution time : 118.5648763179779 sec
+ > memory peak    : 939484 kB
+
+                    Nb Variants 1004 in truth
+                    Nb TP 994 in truth & in pred
+                    Nb FP 3 not in truth & in pred
+                    Nb FN 10 in truth & not in pred
+                    Precision 99.7 %
+                    Recall 99.0 %
+
+
+k20, d10, ab9 ->
+ > execution time : 119.00998091697693 sec
+ > memory peak    : 948240 kB
+
+                    Nb Variants 1004 in truth
+                    Nb TP 991 in truth & in pred
+                    Nb FP 3 not in truth & in pred
+                    Nb FN 13 in truth & not in pred
+                    Precision 99.7 %
+                    Recall 98.7 %
+
+
+k20, d20, ab7 ->
+ > execution time : 118.45548820495605 sec
+ > memory peak    : 940972 kB
+
+                    Nb Variants 1004 in truth
+                    Nb TP 996 in truth & in pred
+                    Nb FP 33 not in truth & in pred
+                    Nb FN 8 in truth & not in pred
+                    Precision 96.8 %
+                    Recall 99.2 %
+
+
+k20, d5, ab7 ->
+ > execution time : 117.50934624671936 sec
+ > memory peak    : 947828 kB
                     Nb Variants 1004 in truth
                     Nb TP 993 in truth & in pred
-                    Nb FP 2573 not in truth & in pred
+                    Nb FP 3 not in truth & in pred
                     Nb FN 11 in truth & not in pred
-                    Precision 27.8 %
+                    Precision 99.7 %
                     Recall 98.9 %
 
-k20, d10, ab3 -> 601 secondes soit 10 minutes
-                    Nb Variants 1004 in truth
-                    Nb TP 992 in truth & in pred
-                    Nb FP 173 not in truth & in pred
-                    Nb FN 12 in truth & not in pred
-                    Precision 85.2 %
-                    Recall 98.8 %
-
-k20, d10, ab4 -> 602 secondes soit 10 minutes
-                    Nb Variants 1004 in truth
-                    Nb TP 992 in truth & in pred
-                    Nb FP 20 not in truth & in pred
-                    Nb FN 12 in truth & not in pred
-                    Precision 98.0 %
-                    Recall 98.8 %
-
-k20, d10, ab5 -> 602 secondes soit 10 minutes
-                    Nb Variants 1004 in truth
-                    Nb TP 992 in truth & in pred
-                    Nb FP 10 not in truth & in pred
-                    Nb FN 12 in truth & not in pred
-                    Precision 99.0 %
-                    Recall 98.8 %
-
-k20, d10, ab6 -> 600 secondes soit 10 minutes
-                    Nb Variants 1004 in truth
-                    Nb TP 991 in truth & in pred
-                    Nb FP 9 not in truth & in pred
-                    Nb FN 13 in truth & not in pred
-                    Precision 99.1 %
-                    Recall 98.7 %
-
-k20, d10, ab7 -> 603 secondes soit 10 minutes
-                    Nb Variants 1004 in truth
-                    Nb TP 991 in truth & in pred
-                    Nb FP 7 not in truth & in pred
-                    Nb FN 13 in truth & not in pred
-                    Precision 99.3 %
-                    Recall 98.7 %
-
-                    Nb Variants 1004 in truth
-Nb TP 995 in truth & in pred
-Nb FP 3 not in truth & in pred
-Nb FN 9 in truth & not in pred
-Precision 99.7 %
-Recall 99.1 %
-
-
-k20, d10, ab8 -> 600 secondes soit 10 minutes
-                    Nb Variants 1004 in truth
-                    Nb TP 988 in truth & in pred
-                    Nb FP 7 not in truth & in pred
-                    Nb FN 16 in truth & not in pred
-                    Precision 99.3 %
-                    Recall 98.4 %
-
-k20, d10, ab9 -> 601 secondes soit 10 minutes
-                    Nb Variants 1004 in truth
-                    Nb TP 987 in truth & in pred
-                    Nb FP 7 not in truth & in pred
-                    Nb FN 17 in truth & not in pred
-                    Precision 99.3 %
-                    Recall 98.3 %
-
-k20, d20, ab7 -> 598 secondes soit 10 minutes
-                    Nb Variants 1004 in truth
-                    Nb TP 991 in truth & in pred
-                    Nb FP 35 not in truth & in pred
-                    Nb FN 13 in truth & not in pred
-                    Precision 96.6 %
-                    Recall 98.7 %
-
-
-k20, d5, ab7 -> 600 secondes soit 10 minutes
-                    Nb Variants 1004 in truth
-                    Nb TP 988 in truth & in pred
-                    Nb FP 8 not in truth & in pred
-                    Nb FN 16 in truth & not in pred
-                    Precision 99.2 %
-                    Recall 98.4 %
 
