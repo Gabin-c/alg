@@ -11,7 +11,7 @@ import pickle
 
 def get_seq(fasta: str):
     """
-    Fonction qui permet d'avoir la sequence sans prendre en compte la premiere ligne du fichier fasta commençant par ">".
+    Permet d'avoir la sequence sans prendre en compte la premiere ligne du fichier fasta commençant par ">".
     Elle va ouvrir le fichier entre en parametre puis lire la deuxieme ligne et en faire le suffixe array
 
     :param fasta: sequence fasta de reference
@@ -34,7 +34,7 @@ def get_seq(fasta: str):
 
 def get_bwt(fasta: str):
     """
-    Fonction qui permet d'obtenir la transformee de Burrows Wheeler à partir du fichier de reference en entree.
+    Permet d'obtenir la transformee de Burrows Wheeler à partir du fichier de reference en entree.
     Grace à la fonction get_seq() on obtient la suffixe array qui va permettre la BWT
 
     :param fasta: sequence fasta de reference
@@ -55,7 +55,7 @@ def get_bwt(fasta: str):
 def get_r_n(bwt):
     
     """
-    Fonction qui permet d'obtenir à partir de la transformee de burrows wheeler, le dictionnaire n du nombre d'occurences pour
+    Permet d'obtenir à partir de la transformee de burrows wheeler, le dictionnaire n du nombre d'occurences pour
     chaque nucléotides et la liste r des rangs de chaque caractères dans la séquence de références.
 
     :param bwt: la transformee de burrows wheeler
@@ -76,7 +76,7 @@ def get_r_n(bwt):
 
 def get_fmi(ref_fasta, output_file):
     """
-    Fonction qui creer le FMindex avec :
+    Creer un FMindex avec :
         L : BWT
         sa : suffix array 
         n : nombre de chaque caractere
