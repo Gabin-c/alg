@@ -127,4 +127,23 @@ k20, d5, ab7 ->
                     Precision 99.7 %
                     Recall 98.9 %
 
+k30, d10, ab7 ->
+ > execution time : 117.38277173042297 sec
+ > memory peak    : 818432 kB
+                    Nb Variants 1004 in truth
+                    Nb TP 992 in truth & in pred
+                    Nb FP 3 not in truth & in pred
+                    Nb FN 12 in truth & not in pred
+                    Precision 99.7 %
+                    Recall 98.8 %
+
+k30, d10, ab6 ->
+ > execution time : 119.52692103385925 sec
+ > memory peak    : 837764 kB
+                    Nb Variants 1004 in truth
+                    Nb TP 993 in truth & in pred
+                    Nb FP 5 not in truth & in pred
+                    Nb FN 11 in truth & not in pred
+                    Precision 99.5 %
+                    Recall 98.9 %
 

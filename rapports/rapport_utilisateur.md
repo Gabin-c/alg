@@ -71,8 +71,18 @@ Suite à cela, nous pouvons donc passer à un jeu de données beaucoup plus impo
 
 
 ### Résultats pour *Escherichia coli*
-temps de calculs
-mémoire utilisée
+Nous avons donc un jeu de données correspondant à *Escherichia coli*. Il contient un fichier fasta des 150 000 premiers 
+nucléotides du génome de *Escherichia coli* et un fichier de 30 000 reads. Pour mapper ces 30 000 reads, notre programme
+a besoin de 120 secondes (2 minutes) quelque soient les paramètres pris en compte.  
+Nous avons fait des tests avec différents paramètres afin de trouver ceux donnant les meilleurs résultats. Pour cela, nous
+avons fait étape par étape en partant des paramètres suivant :
+```shell
+-k 20
+--max_hamming 10
+--min_abundance 1
+```
+
+mémoire utilisée entre 930000kb et 970000kb, diminue si on augmente le kmer mais la qualité des résultat en pati
 qualité des résultats
 EN FONCTION DES VALEURS DES PARAMETRES
 
