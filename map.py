@@ -224,7 +224,7 @@ def fill_vcf(mat, dict_final, sequence_initiale, list_read):
     for cle, valeur in dict_final.items():  # Parcours du dictionnaire Rang-read : position
         pos_read = 0
 
-        for read, refer in zip(list_read[(cle-1)], sequence_initiale[valeur:(valeur + 100)]):
+        for read, refer in zip(list_read[(cle-1)], sequence_initiale[valeur:(valeur + len(list_read[(cle-1)]))]):
             # Parcours de chaque nucléotide du read et de la sequence où le read s'aligne
             # Si il y a une substitution.
             if read != refer:
@@ -390,6 +390,5 @@ mapping(reference, index_file, read_file, k_mers, hamming, abundance, output)
 t2 = time.time()
 print(t2-t1)
 
-# python map.py --ref smallMappingTest/reference.fasta --index smallMappingTest/dumped_index_small.dp --reads
-# smallMappingTest/reads.fasta -k 20 --max_hamming 5 --min_abundance 1 --out smallMappingTest/snps_ref_k19_d5.vcf
+# python map.py --ref smallMappingTest/reference.fasta --index smallMappingTest/dumped_index_small.dp --reads smallMappingTest/reads.fasta -k 20 --max_hamming 5 --min_abundance 1 --out smallMappingTest/snps_test.vcf
 # python map.py --ref coli/ecoli_sample.fasta --index coli/dumped_index_coli.dp --reads coli/ecoli_mutated_reads_1000.fasta -k 20 --max_hamming 10 --min_abundance 10 --out coli/snps_coli_k20_d10_ab10.vcf

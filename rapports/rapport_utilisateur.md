@@ -132,3 +132,45 @@ n'avons pas su la diminuer.
 
 
 ## PARTIE 3 : LES DONNÉES COVID
+Pour finir, nous avons analysé des données covid. Pour cela, nous avons un jeu de données composé du génome de référence 
+du virus SARS-cov2 (29903 bp) et un fichier de 10000 reads d'un vrai séquençage d'un échantillon d'un patient atteint de la covid-19.
+Avec ce jeu de données, notre programme prend environ 50 secondes pour faire le mapping de tous les reads sur le génome de 
+référence et il a une utilisation mémoire de 480 000kb.  
+Voici ci dessous les résultats donnant les SNPs les plus abondants :
+```shell
+#REF: covid/MN908947.fasta
+#READS: covid/SRX9435498_subset10000.fasta
+#K: 20
+#MAX_SUBST: 10
+#MIN_ABUNDANCE: 10
+240	C	T	41
+1058	C	T	61
+3036	C	T	41
+10137	C	T	50
+10318	C	T	42
+14407	C	T	66
+16851	G	T	65
+18423	A	G	41
+21303	C	T	14
+21810	C	T	57
+23402	A	G	69
+25562	G	T	52
+25906	G	T	29
+26106	G	T	29
+27463	T	C	23
+27963	C	T	15
+28471	C	T	30
+28868	C	T	19
+```
+Nous avons affiché les SNPs ayant une abondance supérieure à 10 pour avoir une idée des plus fréquents. Avec une longueur 
+de kmer de 20 et un maximum de substitutions de 10 on retrouve donc 18 SNPs à 18 positions différentes. On remarque que les 
+mutation aboutissent dans la majorité des cas (15 fois sur 18) à une thymine (T). De plus, pour ces 15 mutations, 11 correspondent
+au changement d'une cytosine en thymine et 4 d'une guanine en thymine. Concernant les 3 autres mutations, il s'agit de 2 adénine
+mutée en guanine et d'une guanine mutée en thymine. A noté que l'abondance la plus élevée est retrouvée à la position 23402 (A -> G).
+
+Pour conclure, on peut dire que ce patient originaire du Nouveau Mexique atteint de la covid a contracté une souche du virus
+avec plusieurs mutations. On peut aussi souligner que les mutations donnent le plus souvent un Thymine. Comme le génome de 
+référence a été mis à jour en janvier 2020 et que le prélèvement chez ce patient a eu lieu le 24 août 2020, on en conclu que 
+le virus SARS-COV2 a muté en l'espace de 8 mois. En sachant que le génome de référence a été élaboré à partir d'échantillons d'un patient 
+de Wuhan en Chine, les mutations peuvent être dues au changement d'environnement mais aussi à l'adaptation au cours du temps 
+du virus.
