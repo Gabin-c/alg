@@ -20,8 +20,8 @@ stocker dans un fichier. Ce FM index se présente sous la forme d'un tuple conte
 ```shell
 FMI = ('BWT', [SA], {n}, [r])    
 ```
-- Le deuxième fichier *map.py* a pour but de mapper les reads sur la séquence du génome de référence en utilisant le 
-FM index créé précédemment. Cela dans le but de détecter des variants (SNPs) et de les stocker dans un fichier VCF sous
+- Le deuxième fichier *map.py* a pour objectif de mapper les reads sur la séquence du génome de référence en utilisant le 
+FM index créé précédemment dans le but de détecter des variants (SNPs) et de les stocker dans un fichier VCF sous
 la forme suivante :
 ```shell script
     #REF: fichier du génome de référence
@@ -88,7 +88,7 @@ avons fait étape par étape en partant des paramètres suivants :
 --min_abundance 1
 ```
 Avec ces paramètres nous avons obtenu des résultats de faible qualité avec une précision de 3.6%. En effet, on retrouvait
-26 902 SNPs faux positifs. Pour améliorer les résultats nous avons dans un premier temps augmenté l'abondance minimum petit
+26 902 SNPs faux positifs. Afin d'améliorer les résultats nous avons dans un premier temps augmenté l'abondance minimum petit
 à petit. A chaque augmentation, la précision augmentait et le nombre de faux positifs diminuait. Nous avons donc trouvé 
 le minimum d'abondance idéal qui est de 7. Il s'agit de l'abondance qui permet d'avoir le taux de précision le plus élevé
 et le taux de vrai positif le plus élevé. Voici le résultat ci-dessous avec une précision de 99.7% et un recall de 99.1%.
@@ -107,15 +107,17 @@ Avec ces paramètres, nous avons pu voir que notre programme utilise environ 930
 Ensuite, nous avons donc gardé une abondance de 7 tout en faisant varier le maximum de substitution. En augmentant ce maximum,
 nous avons une précision qui diminue et en le diminuant on retrouve une augmentation du nombre de faux positifs. Nous avons 
 donc gardé un maximum de substitution de 10 car l'utilisation mémoire n'était pas impactée par ce paramètre.  
-Pour finir, nous avons fait varier la longueur du kmer. L'augmentation de la longueur du kmer, le temps de calcul diminue 
+
+Pour finir, nous avons fait varier la longueur du kmer. Avec une augmentation de la longueur du kmer, le temps de calcul diminue 
 et l'utilisation mémoire diminue. En effet si on augmente à 50, on a un temps de calcul de 88 secondes et une utilisation mémoire 
 de 580 000kb. Cependant on perd en qualité car on retrouve 136 faux négatifs.
 En augmentant un peu moins la longueur du kmer (à 30), le temps n'est pas impacté mais l'utilisation mémoire diminue à 800 000kb. 
-De plus, la précision reste à 99.7%. Cependant le nombre de faux négatif passe de 9 à 12.  
-Il faut donc faire un choix entre diminution de l'utilisation mémoire ou diminution du nombre de faux négatifs. Nous avons fait 
+De plus, la précision reste à 99.7%. Cependant le nombre de faux négatif passe de 9 à 12. Il faut donc faire un choix entre diminution de l'utilisation mémoire ou diminution du nombre de faux négatifs. Nous avons fait 
 le second choix en gardant une longueur de kmer de 20.
+
 A l'inverse, en diminuant la longueur du kmer, on obtient des résultats identiques avec une précision identique. Seulement,
-l'utilisation de la mémoire augmente fortement (plus de 1GB) et le temps de calcul augmente légèrement.
+l'utilisation de la mémoire augmente fortement (plus de 1GB) et le temps de calcul augmente légèrement. C'est du au fait que
+les dictionnaires utilisés sont plus conséquents.
 
 Pour résumer, nous avons donc gardé en paramètres par défaut :
  - Une longueur de kmer de 20
@@ -133,7 +135,7 @@ n'avons pas su la diminuer.
 
 ## PARTIE 3 : LES DONNÉES COVID
 Pour finir, nous avons analysé des données covid. Pour cela, nous avons un jeu de données composé du génome de référence 
-du virus SARS-cov2 (29903 bp) et un fichier de 10000 reads d'un vrai séquençage d'un échantillon d'un patient atteint de la covid-19.
+du virus SARS-cov2 (29903 bp) et un fichier de 10000 reads d'un vrai séquençage d'un échantillon d'un patient atteint de la Covid-19.
 Avec ce jeu de données, notre programme prend environ 50 secondes pour faire le mapping de tous les reads sur le génome de 
 référence et il a une utilisation mémoire de 480 000kb.  
 Voici ci dessous les résultats donnant les SNPs les plus abondants :
@@ -168,8 +170,8 @@ mutation aboutissent dans la majorité des cas (15 fois sur 18) à une thymine (
 au changement d'une cytosine en thymine et 4 d'une guanine en thymine. Concernant les 3 autres mutations, il s'agit de 2 adénine
 mutée en guanine et d'une guanine mutée en thymine. A noté que l'abondance la plus élevée est retrouvée à la position 23402 (A -> G).
 
-Pour conclure, on peut dire que ce patient originaire du Nouveau Mexique atteint de la covid a contracté une souche du virus
-avec plusieurs mutations. On peut aussi souligner que les mutations donnent le plus souvent un Thymine. Comme le génome de 
+Pour conclure, on peut dire que ce patient originaire du Nouveau Mexique atteint de la Covid-19 a contracté une souche du virus
+avec plusieurs mutations. On peut aussi souligner que les mutations donnent le plus souvent une Thymine. Comme le génome de 
 référence a été mis à jour en janvier 2020 et que le prélèvement chez ce patient a eu lieu le 24 août 2020, on en conclu que 
 le virus SARS-COV2 a muté en l'espace de 8 mois. En sachant que le génome de référence a été élaboré à partir d'échantillons d'un patient 
 de Wuhan en Chine, les mutations peuvent être dues au changement d'environnement mais aussi à l'adaptation au cours du temps 
