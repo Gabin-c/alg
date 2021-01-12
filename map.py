@@ -107,10 +107,10 @@ def get_occurrences(pattern: str, bwt: str, n: {}, r: [], sa: [int]) -> []:
     :return: liste d'occurrences du pattern dans la bwt
     """
     start = 0
-    stop = len(bwt)-1
-    
+    stop = len(bwt) - 1
+
     # lit le pattern de droite à gauche
-    for pos_pattern in range(len(pattern)-1, -1, -1):
+    for pos_pattern in range(len(pattern) - 1, -1, -1):
         current_char = pattern[pos_pattern]
         new_start = get_down(bwt, current_char, start, stop)
         if new_start == -1:
@@ -119,7 +119,7 @@ def get_occurrences(pattern: str, bwt: str, n: {}, r: [], sa: [int]) -> []:
         start = left_first(bwt[new_start], r[new_start], n)
         stop = left_first(bwt[new_stop], r[new_stop], n)
     res = []
-    for occ in range(start, stop+1):
+    for occ in range(start, stop + 1):
         res.append(sa[occ])
     return res
 
@@ -187,7 +187,7 @@ def get_kmer_position(k: int, reads: str, index) -> {}:
                 kmer_reverse_position[pos_rev] = {}
                 # read initial
                 for kmers in range(start, len(read_line), k):  # recherche du k-mer sur le genome de reference
-                    while end <= len(read_line)-1:
+                    while end <= len(read_line) - 1:
                         start += 1
                         end += 1
                         occ = []
@@ -225,7 +225,7 @@ def fill_vcf(mat, dict_final, sequence_initiale, list_read):
     for cle, valeur in dict_final.items():  # Parcours du dictionnaire Rang-read : position
         pos_read = 0
 
-        for read, refer in zip(list_read[(cle-1)], sequence_initiale[valeur:(valeur + len(list_read[(cle-1)]))]):
+        for read, refer in zip(list_read[(cle - 1)], sequence_initiale[valeur:(valeur + len(list_read[(cle - 1)]))]):
             # Parcours de chaque nucléotide du read et de la sequence où le read s'aligne
             # Si il y a une substitution.
             if read != refer:
@@ -320,7 +320,7 @@ def mapping(ref, index, reads: str, k: int, max_hamming: int, min_abundance: int
                     if score < score_ali and score_ali >= (len(read) - max_hamming):
                         position_finale = (position - pos_r)
                         score = score_ali
-                        dict_final[(i+1)] = position_finale
+                        dict_final[(i + 1)] = position_finale
             pos_r += 1
         i += 1
 
@@ -328,14 +328,14 @@ def mapping(ref, index, reads: str, k: int, max_hamming: int, min_abundance: int
     mat = [[], [], [], []]  # initialisation de la table vcf
     tab_vcf = fill_vcf(mat, dict_final, sequence_initiale, kmer_position[1])  # remplissage de la table vcf
     tab_vcf = order_vcf(tab_vcf)
-    
+
     # ÉCRITURE DU FICHIER VCF
     with open(out_file, 'w') as vcf:
         # Écriture des 1eres lignes du fichier :
         vcf.write("#REF: " + ref + "\n""#READS: " + reads +
                   "\n"'#K: ' + str(k) + '\n''#MAX_SUBST: ' +
                   str(max_hamming) + '\n''#MIN_ABUNDANCE: ' + str(min_abundance) + '\n')
-        
+
         # Écriture des données de la table vcf en fonction de l'abondance minimum retenu
         i = 0
         while i < len(tab_vcf[0]):
@@ -360,8 +360,8 @@ if __name__ == "__main__":
 
     except getopt.GetoptError as err:
         print('Usage : \n python map.py --ref[genome_file.fa] --index[dumped_index.dp] '
-                  '--reads[reads.fa] -k[k_value] --max_hamming[h_value] --min_abundance[m_value] --out snps.vcf \n'
-                  'Default settings : \n - k = 20 \n - max_hamming = 10 \n - min_abundance = 7')
+              '--reads[reads.fa] -k[k_value] --max_hamming[h_value] --min_abundance[m_value] --out snps.vcf \n'
+              'Default settings : \n - k = 20 \n - max_hamming = 10 \n - min_abundance = 7')
         sys.exit(2)
     for option, arg in opts:
         if option in "-h":
@@ -389,5 +389,4 @@ if __name__ == "__main__":
     t1 = time.time()
     mapping(reference, index_file, read_file, k_mers, hamming, abundance, output)
     t2 = time.time()
-    print(t2-t1)
-
+    print(t2 - t1)
