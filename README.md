@@ -14,7 +14,7 @@ Le fichier **tools_karkkainen_sanders.py** est utilisé pour l'indexation.
 
 Les dossiers *coli*, *covid* et *mallMappingTest* contiennent les jeux des données que nous avons testé.
 
-Le fichier *rapports* contient 2 fichiers markdown :
+Le dossier *rapports* contient 2 fichiers markdown :
 
 - **rapport_developpeur.md** qui explique la structure du programme et le fonctionnement des fonctions majeures
 - **rapport_utilisateur.md** qui présente les résultats obtenus selon les paramètres utilisés et pour les différents jeux de données.
