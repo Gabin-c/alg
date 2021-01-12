@@ -25,7 +25,7 @@ def get_seq(fasta: str):
                 return s, sa
 
 
-# Test de la fonction
+# Test get_seq()
 # get_seq("smallMappingTest/reference.fasta")
 
 # Pour avoir la sequence : s = get_seq("smallMappingTest/reference.fasta")[0]
@@ -35,7 +35,7 @@ def get_seq(fasta: str):
 def get_bwt(fasta: str):
     """
     Permet d'obtenir la transformee de Burrows Wheeler à partir du fichier de reference en entree.
-    Grace à la fonction get_seq() on obtient la suffixe array qui va permettre la BWT
+    Grace à la fonction get_seq() on obtient la suffixe array qui va permettre de construire la BWT
 
     :param fasta: sequence fasta de reference
     :return: transformee de BW, suffix array

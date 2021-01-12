@@ -210,7 +210,7 @@ def get_kmer_position(k: int, reads: str, index) -> {}:
 
 def fill_vcf(mat, dict_final, sequence_initiale, list_read):
     """
-    RempliT une matrice au format vcf : POSITION / REFERENCE / ALTERNATIF / ABONDANCE à
+    Remplit une matrice au format vcf : POSITION / REFERENCE / ALTERNATIF / ABONDANCE à
     partir d'un dictionnaire Rang-read:position et sa liste de reads associé ainsi que d'une sequence de référence.
    
     

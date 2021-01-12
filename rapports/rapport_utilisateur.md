@@ -51,9 +51,9 @@ Cette commande prendre plusieurs arguments en compte :
 - *--ref* : le fichier fasta de la séquence de référence
 - *--index* : le fichier *dp* contenant le FM index
 - *--reads* : le fichier fasta contenant les reads à mapper
-- *-k* : la longueur du kmer à considérer pour l'ancrage des reads sur le génome
-- *--max_hamming* : le nombre maximum de substitutions pour le mapping
-- *--min_abundance* : le minimum d'abondance des SNPs à considérer pour le fichier VCF
+- *-k* : la longueur du kmer à considérer pour l'ancrage des reads sur le génome (valeur par defaut : 20)
+- *--max_hamming* : le nombre maximum de substitutions pour le mapping (valeur par defaut : 10)
+- *--min_abundance* : le minimum d'abondance des SNPs à considérer pour le fichier VCF (valeur par defaut : 7)
 - *--out* : le fichier VCF de sortie
 
 Pour obtenir l'aide des deux programmes et ainsi savoir la commande à taper ainsi que les paramètres par défaut on peut 
