@@ -2,7 +2,7 @@
 Gabin Coudray - David Gallien  
 Master 2 BIS
 ***
-Ce programme a pour but de mettre en place un mappeur sans gap pour la détection de SNPs. Il se distingue en deux fichier.py 
+Ce programme a pour but d'élaborer un mappeur sans gap pour la détection de SNPs. Il se compose de deux fichier.py 
 distincts :
 - Le premier permet l'indexation du génome de référence
 - Le second permet le mapping des reads sur le génome de référence
@@ -25,7 +25,7 @@ Les 3 derniers éléments de cet FM index permettent de parcourir et requêter l
 La fonction *get_fmi(ref_fasta, output_file)* prend en entrée le génome de référence au format fasta ainsi que le nom choisi 
 pour le fichier contenant le FM index créé. En sortie, la fonction retourne un fichier au format binaire contenant le FM index.
 
-Le programme se déroule en deux étapes :  
+Le programme se décompose en deux étapes :  
 Dans un premier temps la transformée de Burrows-Wheeler va être déterminée à l'aide du génome de référence puis le rang (r) 
 et le nombre (n) de chaque caractère vont être identifiés à l'aide de la BWT. A la fin de la première étape nous aurons le 
 Suffix Array et la BWT et à la fin de la deuxième étape nous aurons les deux derniers éléments de l'index r et n.
@@ -37,7 +37,7 @@ ainsi que le suffix array.
 
 Elle fonctionne de la manière suivante : 
 Dans un premier temps la fonction *get_seq(fasta: str)* traite le fichier du génome de référence. Elle évite la première 
-ligne commençant par ">" puis stock la séquence du génome de référence (s). Enfin, elle crée le suffix array à l'aide la 
+ligne commençant par ">" puis stock la séquence du génome de référence (s). Enfin, elle crée le suffix array à l'aide de la 
 fonction *kark_sort()* qui est importée de *tools_karkkainen_sander.py*. Ensuite, avec la séquence et le suffix array, on 
 peut obtenir la BWT. Enfin, la fonction retourne le suffix array et la transformée de Burrows-Wheeler, qui seront stockés 
 dans le FM index.
@@ -75,14 +75,14 @@ nom du fichier vcf de sortie (out_file).
 
 Cette fonction va retourner un tableau de SNP au format vcf obtenu grâce à l'alignement des reads sur le génome.
 
-La fonction se décompose en 3 étapes :
+Elle se décompose en 3 étapes :
 - Création d'un dictionnaire contenant les positions d'alignement pour chaque 
 k-mer de chaque read +/- 
 - Création d'un dictionnaire contenant la meilleur position d'alignement pour 
 chaque read +/-
 - Remplissage de la table des SNPs
 
-#### Etape 1 : Dictionnaire *{ Rang-read: {kmer: positions}}*
+#### Etape 1 : Dictionnaire *{Rang-read: {kmer: positions}}*
 Dans un premier temps le fichier contenant le FM index va être ouvert afin de rendre 
 accessible les différents éléments du FM index.
 
@@ -96,16 +96,18 @@ Cette fonction permet d'obtenir la ou les positions de chaque kmer sur le brin s
 
 #### Etape 2 : Dictionnaire <i>{read:position}</i> 
 Une fois qu'on a toutes les positions possibles pour un kmer, la fonction passe à l'étape de la localisation de la meilleure 
-position d'alignement de chaque read sur le génome de référence pour cela *mapping()* utilise la trame suivante : 
-Chaque position associée au read du dictionnaire va être lue. Ensuite un score d'alignement est calculé sans gap puis stocké. 
+position d'alignement de chaque read sur le génome de référence. Pour cela la fonction *mapping()* utilise la trame suivante : 
+chaque position associée au read du dictionnaire va être lue. Ensuite un score d'alignement est calculé sans gap puis stocké. 
 Enfin, la position avec le score le plus élevé est gardée en prenant en compte le nombre de substitutions maximum. On obtient 
 un dictionnaire final qui contient la meilleure position d'alignement pour chaque read.
 
 #### Etape 3 : Table SNP
 Une fois le dictionnaire des meilleures positions d'alignement obtenu, on passe à l'étape de remplissage de la table de SNPs.
 Pour cela, on a deux fonctions :  
-- La première *fill_vcf(mat, dict_final, sequence_initiale, list_read)* pour remplir ce tableau - - La seconde *order_vcf(tab_vcf)*
+- La première *fill_vcf(mat, dict_final, sequence_initiale, list_read)* pour remplir le tableau
+- La seconde *order_vcf(tab_vcf)*
   pour ordonner les SNPs selon l'ordre croissant des positions.  
+  
 Ce tableau est stocké dans un fichier au format vcf de la forme suivante :
 
 ```shell script
