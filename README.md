@@ -12,7 +12,7 @@ distincts :
 
 Le fichier **tools_karkkainen_sanders.py** est utilisé pour l'indexation.
 
-Les dossiers *coli*, *covid* et *mallMappingTest* contiennent les jeux des données que nous avons testé.
+Les dossiers *coli*, *covid* et *smallMappingTest* contiennent les jeux des données que nous avons testé.
 
 Le dossier *rapports* contient 2 fichiers markdown :
 
