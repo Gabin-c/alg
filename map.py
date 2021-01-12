@@ -8,8 +8,9 @@ import time
 
 
 # Ce programme a pour but de mapper des reads sur une séquence de référence en relevant les différentes substitutions 
-# que peut contenir l'alignement et de sortir ses différences dans un fichier SNPs au format vcf :
+# que peut contenir l'alignement et de sortir ces différences dans un fichier SNPs au format vcf :
 # POSITION / REFERENCE / ALTERNATIF / ABONDANCE
+
 
 def get_my_fmi(index):
     """
@@ -57,7 +58,7 @@ def get_down(bwt: str, alpha: chr, start: int, stop: int) -> int:
       - si bwt[line] == alpha, renvoie la ligne correspondante
       - si ligne > stop : renvoie -1
 
-    :param bwt: transformee de Burrows Wheeler
+    :param bwt: transformée de Burrows Wheeler
     :param alpha: caractère ($, A, C, G ou T)
     :param start:  ligne de départ
     :param stop: ligne de fin
@@ -95,15 +96,15 @@ def get_up(bwt: str, alpha: chr, start: int, stop: int) -> int:
 
 def get_occurrences(pattern: str, bwt: str, n: {}, r: [], sa: [int]) -> []:
     """
-    Retourne les positions des occurences du pattern dans la séquence de référence à l'aide de bwt, sa , n , r.
-    On obtient en sortie une liste des positions des occurences.
+    Retourne les positions des occurrences du pattern dans la séquence de référence à l'aide de bwt, sa , n , r.
+    On obtient en sortie une liste des positions des occurrences.
     
     :param pattern: séquence à tester
     :param bwt: Transformée de BW : my_fmi[0]
-    :param n: nombre de chaque caractere
-    :param r: rang de chaque caractere
+    :param n: nombre de chaque caractère
+    :param r: rang de chaque caractère
     :param sa: suffix array
-    :return: liste d'occurences du pattern dans la bwt
+    :return: liste d'occurrences du pattern dans la bwt
     """
     start = 0
     stop = len(bwt)-1
@@ -128,8 +129,8 @@ def bwt_2_seq(bwt: str, n: {}, r: []) -> str:
     Retourne la sequence initiale à partir de la BWT
     
     :param bwt: Transformée de BW : my_fmi[0]
-    :param n: nombre de chaque caractere
-    :param r: rang de chaque caractere
+    :param n: nombre de chaque caractère
+    :param r: rang de chaque caractère
     :return: La séquence d'origine
     """
     sequence_reconstructed = ""
@@ -228,7 +229,7 @@ def fill_vcf(mat, dict_final, sequence_initiale, list_read):
             # Parcours de chaque nucléotide du read et de la sequence où le read s'aligne
             # Si il y a une substitution.
             if read != refer:
-                # Si la substitution a déja été pris en compte
+                # Si la substitution a déjà été pris en compte
                 if (valeur + pos_read) in mat[0]:
                     y = mat[0].index((valeur + pos_read))
                     mat[3][y] += 1
@@ -283,7 +284,7 @@ def mapping(ref, index, reads: str, k: int, max_hamming: int, min_abundance: int
         fmi = pickle.load(f2)
 
     # CREATION DU DICTIONNAIRE {Rang-read:{k-mer:[position]}}
-    # contenant les positions des occurences k-mers pour chaque read
+    # contenant les positions des occurrences k-mers pour chaque read
     # ainsi que la liste ordonnée des reads +/-
     kmer_position = get_kmer_position(k, reads, index)
 
@@ -305,7 +306,7 @@ def mapping(ref, index, reads: str, k: int, max_hamming: int, min_abundance: int
                     # La position du read sur le génome est déterminée par la position de l'alignement du k-mer sur le
                     # génome et la position du k-mer sur le read (pos_r).
                     # Le read s'alignera de la position "position - pos_r" à cette même position + la  longueur du read.
-                    # On compare chaque nucléotide du read avec celle de son angrage et on ajoute +1 au score si
+                    # On compare chaque nucléotide du read avec celle de son ancrage et on ajoute +1 au score si
                     # les deux nucléotides sont égales
                     score_ali = 0
                     for Nucread, Nucseq in zip(read,
@@ -315,7 +316,7 @@ def mapping(ref, index, reads: str, k: int, max_hamming: int, min_abundance: int
 
                     # VERIFICATION DU SCORE
                     # si le score est plus grand que le précédent et respecte le nombre max de substitutions autorisé
-                    # alors le score prédédent et la meilleur position d'alignement remplacé
+                    # alors le score précédent et la meilleur position d'alignement remplacé
                     if score < score_ali and score_ali >= (len(read) - max_hamming):
                         position_finale = (position - pos_r)
                         score = score_ali
@@ -328,14 +329,14 @@ def mapping(ref, index, reads: str, k: int, max_hamming: int, min_abundance: int
     tab_vcf = fill_vcf(mat, dict_final, sequence_initiale, kmer_position[1])  # remplissage de la table vcf
     tab_vcf = order_vcf(tab_vcf)
     
-    # ECRITURE DU FICHIER VCF
+    # ÉCRITURE DU FICHIER VCF
     with open(out_file, 'w') as vcf:
-        # Ecriture des 1eres lignes du fichier :
+        # Écriture des 1eres lignes du fichier :
         vcf.write("#REF: " + ref + "\n""#READS: " + reads +
                   "\n"'#K: ' + str(k) + '\n''#MAX_SUBST: ' +
                   str(max_hamming) + '\n''#MIN_ABUNDANCE: ' + str(min_abundance) + '\n')
         
-        # Ecriture des données de la table vcf en fonction de l'abondance minimum retenu
+        # Écriture des données de la table vcf en fonction de l'abondance minimum retenu
         i = 0
         while i < len(tab_vcf[0]):
             if tab_vcf[3][i] >= min_abundance:
@@ -385,10 +386,8 @@ if __name__ == "__main__":
         elif option in "--out":
             output = arg
 
-t1 = time.time()
-mapping(reference, index_file, read_file, k_mers, hamming, abundance, output)
-t2 = time.time()
-print(t2-t1)
+    t1 = time.time()
+    mapping(reference, index_file, read_file, k_mers, hamming, abundance, output)
+    t2 = time.time()
+    print(t2-t1)
 
-# python map.py --ref smallMappingTest/reference.fasta --index smallMappingTest/dumped_index_small.dp --reads smallMappingTest/reads.fasta -k 20 --max_hamming 5 --min_abundance 1 --out smallMappingTest/snps_test.vcf
-# python map.py --ref coli/ecoli_sample.fasta --index coli/dumped_index_coli.dp --reads coli/ecoli_mutated_reads_1000.fasta -k 20 --max_hamming 10 --min_abundance 10 --out coli/snps_coli_k20_d10_ab10.vcf
